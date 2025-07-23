@@ -23,7 +23,7 @@ const Courses = () => {
   const searchInputRef = useRef(null);
   const limit = 20;
 
-  // All endpoints for collections
+  // Updated endpoints with Render.com URL
   const endpoints = [
     "https://multiverse-backend.onrender.com/api/movies",
     "https://multiverse-backend.onrender.com/api/pcGames",
@@ -48,7 +48,7 @@ const Courses = () => {
           axios.get(endpoint, {
             params: {
               search: submittedSearch,
-              page,
+              page: 1,  // Always request first page from each endpoint
               limit: 100
             }
           })
@@ -66,11 +66,17 @@ const Courses = () => {
     } finally {
       setLoading(false);
     }
-  }, [submittedSearch, page]);
+  }, [submittedSearch]);
 
   useEffect(() => {
     fetchAllMedia();
   }, [fetchAllMedia]);
+
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1);
+    setPageBlock(0);
+  }, [activeFilter, qualityFilter, ratingFilter, yearFilter, sortOption]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
@@ -86,14 +92,24 @@ const Courses = () => {
 
   // Apply filters and sorting
   const filteredMedia = [...media]
-    // Quality filter
+    // Filter by category
+    .filter(item => {
+      if (activeFilter === "all") return true;
+      if (activeFilter === "movie") return item.type === "movie" || item.type === "animeMovie";
+      if (activeFilter === "game") return item.type.includes("Game");
+      if (activeFilter === "anime") return item.type.includes("anime");
+      if (activeFilter === "series") return item.type === "webSeries" || item.type === "animeSeries";
+      if (activeFilter === "app") return item.type.includes("App") || item.type === "modApk";
+      return true;
+    })
+    // Filter by quality
     .filter(item => {
       if (qualityFilter === "all") return true;
       return item.qualities && item.qualities[qualityFilter];
     })
-    // Rating filter
+    // Filter by rating
     .filter(item => item.rating >= ratingFilter)
-    // Year filter
+    // Filter by year
     .filter(item => {
       if (!yearFilter) return true;
       const year = new Date(item.releaseDate).getFullYear();
