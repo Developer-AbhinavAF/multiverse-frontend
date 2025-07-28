@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import Mediator from "./components/Mediator";
 import Footer from "./components/Footer";
 import Stream from "./components/Stream";
+import AboutUs from "./components/About";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Courses />} />
+          <Route path="/about-us" element={<AboutUs />} />
           <Route path="/media/:slug" element={<Mediator />} />
           <Route path="/stream/:slug" element={<Stream />} />
         </Routes>
