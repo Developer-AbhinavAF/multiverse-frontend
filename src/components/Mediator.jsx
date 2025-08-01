@@ -265,7 +265,7 @@ const Mediator = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-[#0f0c29] via-[#1e1b52] to-[#2d2a80] text-white flex items-center justify-center">
+      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-400 mx-auto mb-4"></div>
           <p className="text-xl">Loading media details...</p>
@@ -298,7 +298,7 @@ const Mediator = () => {
   const selectedDownload = downloadOptions.find(opt => opt.quality === selectedQuality);
 
   return (
-    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-[#0f0c29] via-[#1e1b52] to-[#2d2a80] text-white">
+    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white">
       <div className="max-w-5xl mx-auto">
         <button 
           onClick={() => navigate(-1)}

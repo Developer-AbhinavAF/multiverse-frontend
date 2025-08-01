@@ -241,7 +241,7 @@ const Courses = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 pt-[130px] pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-stone-600 via-gray-900 to-black pt-[130px] pb-12 px-4 sm:px-6 lg:px-8">
       <style>{`
         @keyframes shimmer {
           0% { transform: translateX(-100%); }

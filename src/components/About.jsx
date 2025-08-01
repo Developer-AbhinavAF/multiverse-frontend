@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FaReact, FaNodeJs, FaPython, FaJava, FaDocker, FaAws, FaDatabase, FaFigma, FaGitAlt, FaDownload, FaHeart, FaStar } from 'react-icons/fa';
+import { motion, time } from 'framer-motion';
+import { FaReact, FaNodeJs, FaPython, FaJava, FaDocker, FaAws, FaDatabase, FaFigma, FaGitAlt, FaDownload, FaHeart, FaStar, FaGithub } from 'react-icons/fa';
 import { SiJavascript, SiTypescript, SiMongodb, SiFirebase, SiRedux, SiNextdotjs, SiTailwindcss } from 'react-icons/si';
+import { all } from 'axios';
 
 const AboutUs = () => {
   const [activeSkill, setActiveSkill] = useState(null);
@@ -31,34 +32,35 @@ const AboutUs = () => {
     { id: 14, name: "Tailwind CSS", icon: <SiTailwindcss />, color: "from-teal-400 to-cyan-600" },
     { id: 15, name: "Figma", icon: <FaFigma />, color: "from-purple-400 to-fuchsia-600" },
     { id: 16, name: "Git", icon: <FaGitAlt />, color: "from-orange-600 to-red-700" },
+    { id: 17, name: "Github", icon: <FaGithub />, color: "from-black-600 to-white-700" },
   ];
 
   // Team members data
   const teamMembers = [
     {
       id: 1,
-      name: "Alex Johnson",
+      name: "Abhinav",
       role: "Founder & CEO",
       bio: "Tech visionary with 10+ years in software development. Passionate about creating solutions that make a difference.",
       color: "from-blue-400 to-indigo-600"
     },
     {
       id: 2,
-      name: "Maria Garcia",
+      name: "Abhinav",
       role: "Lead Designer",
       bio: "Creative designer specializing in UI/UX with a focus on user-centered design principles.",
       color: "from-pink-500 to-rose-600"
     },
     {
       id: 3,
-      name: "David Chen",
+      name: "Abhinav",
       role: "CTO",
       bio: "Full-stack developer and systems architect with expertise in scalable cloud solutions.",
       color: "from-green-500 to-emerald-600"
     },
     {
       id: 4,
-      name: "Sarah Williams",
+      name: "Abhinav",
       role: "Marketing Director",
       bio: "Digital marketing expert with a track record of building engaged communities around tech products.",
       color: "from-yellow-400 to-amber-600"
@@ -169,7 +171,7 @@ const AboutUs = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white overflow-hidden">
       {/* Floating particles container */}
       <div className="particles-container fixed inset-0 overflow-hidden pointer-events-none z-0" />
       
@@ -671,13 +673,14 @@ const AboutUs = () => {
           transition={{ delay: 0.3, duration: 0.7 }}
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Ready to start your journey?</h2>
-          <motion.button
+          <motion.a
+            href='/'
             className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg shadow-cyan-500/30"
-            whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(0, 224, 255, 0.5)" }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(0, 224, 255, 0.5)", transition: `all .6s ease-in-out` }}
             whileTap={{ scale: 0.95 }}
           >
             Join Us Today
-          </motion.button>
+          </motion.a>
         </motion.div>
       </div>
     </div>

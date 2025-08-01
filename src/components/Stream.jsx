@@ -172,7 +172,7 @@ const Stream = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white flex items-center justify-center">
+      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-400 mx-auto mb-4"></div>
           <p className="text-xl">Loading streaming details...</p>
