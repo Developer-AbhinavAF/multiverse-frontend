@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { motion, time } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FaReact, FaNodeJs, FaPython, FaJava, FaDocker, FaAws, FaDatabase, FaFigma, FaGitAlt, FaDownload, FaHeart, FaStar, FaGithub } from 'react-icons/fa';
 import { SiJavascript, SiTypescript, SiMongodb, SiFirebase, SiRedux, SiNextdotjs, SiTailwindcss } from 'react-icons/si';
-import { all } from 'axios';
 
 const AboutUs = () => {
   const [activeSkill, setActiveSkill] = useState(null);
@@ -32,7 +31,7 @@ const AboutUs = () => {
     { id: 14, name: "Tailwind CSS", icon: <SiTailwindcss />, color: "from-teal-400 to-cyan-600" },
     { id: 15, name: "Figma", icon: <FaFigma />, color: "from-purple-400 to-fuchsia-600" },
     { id: 16, name: "Git", icon: <FaGitAlt />, color: "from-orange-600 to-red-700" },
-    { id: 17, name: "Github", icon: <FaGithub />, color: "from-black-600 to-white-700" },
+    { id: 17, name: "Github", icon: <FaGithub />, color: "from-gray-600 to-white-700" },
   ];
 
   // Team members data
@@ -46,21 +45,21 @@ const AboutUs = () => {
     },
     {
       id: 2,
-      name: "Abhinav",
+      name: "Rahul",
       role: "Lead Designer",
       bio: "Creative designer specializing in UI/UX with a focus on user-centered design principles.",
       color: "from-pink-500 to-rose-600"
     },
     {
       id: 3,
-      name: "Abhinav",
+      name: "Vikram",
       role: "CTO",
       bio: "Full-stack developer and systems architect with expertise in scalable cloud solutions.",
       color: "from-green-500 to-emerald-600"
     },
     {
       id: 4,
-      name: "Abhinav",
+      name: "Priya",
       role: "Marketing Director",
       bio: "Digital marketing expert with a track record of building engaged communities around tech products.",
       color: "from-yellow-400 to-amber-600"
@@ -147,7 +146,7 @@ const AboutUs = () => {
     const container = document.querySelector('.particles-container');
     
     if (container) {
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 20; i++) {
         const particle = document.createElement('div');
         particle.className = 'absolute rounded-full';
         particle.style.width = `${Math.random() * 30 + 10}px`;
@@ -160,6 +159,10 @@ const AboutUs = () => {
           ? "radial-gradient(circle, rgba(108,93,211,0.2) 0%, rgba(108,93,211,0) 70%)" 
           : "radial-gradient(circle, rgba(255,94,58,0.2) 0%, rgba(255,94,58,0) 70%)";
         
+        // Add animation
+        particle.style.animation = `float ${Math.random() * 10 + 10}s infinite ease-in-out`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+        
         container.appendChild(particle);
         particles.push(particle);
       }
@@ -170,8 +173,21 @@ const AboutUs = () => {
     };
   }, []);
 
+  // Add to CSS
+  const floatAnimation = `
+    @keyframes float {
+      0% { transform: translateY(0) translateX(0); }
+      25% { transform: translateY(-20px) translateX(10px); }
+      50% { transform: translateY(-40px) translateX(0); }
+      75% { transform: translateY(-20px) translateX(-10px); }
+      100% { transform: translateY(0) translateX(0); }
+    }
+  `;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white overflow-hidden">
+      <style>{floatAnimation}</style>
+      
       {/* Floating particles container */}
       <div className="particles-container fixed inset-0 overflow-hidden pointer-events-none z-0" />
       
@@ -187,7 +203,7 @@ const AboutUs = () => {
             {['about', 'team', 'skills', 'contact'].map((tab) => (
               <button
                 key={tab}
-                className={`px-6 py-3 rounded-full text-sm font-medium transition-all ${
+                className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm font-medium transition-all ${
                   activeTab === tab
                     ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
                     : 'text-cyan-200 hover:text-white'
@@ -208,7 +224,7 @@ const AboutUs = () => {
           transition={{ duration: 0.8 }}
         >
           <motion.h1 
-            className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400"
+            className="text-4xl sm:text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 1 }}
@@ -217,7 +233,7 @@ const AboutUs = () => {
           </motion.h1>
           
           <motion.p 
-            className="text-xl md:text-2xl max-w-3xl mx-auto text-cyan-100 mb-10"
+            className="text-lg sm:text-xl md:text-2xl max-w-3xl mx-auto text-cyan-100 mb-10"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5, duration: 1 }}
@@ -237,15 +253,15 @@ const AboutUs = () => {
         {/* About Section */}
         {activeTab === 'about' && (
           <motion.div 
-            className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 backdrop-blur-lg rounded-3xl p-8 md:p-12 my-16 border border-purple-500/30"
+            className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 backdrop-blur-lg rounded-3xl p-6 md:p-8 my-16 border border-purple-500/30"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.7 }}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div>
                 <motion.h2 
-                  className="text-3xl md:text-4xl font-bold mb-6 text-cyan-300"
+                  className="text-2xl md:text-3xl font-bold mb-6 text-cyan-300"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.4, duration: 0.7 }}
@@ -254,7 +270,7 @@ const AboutUs = () => {
                 </motion.h2>
                 
                 <motion.p 
-                  className="text-lg mb-6 text-cyan-100"
+                  className="mb-6 text-cyan-100"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5, duration: 0.7 }}
@@ -263,7 +279,7 @@ const AboutUs = () => {
                 </motion.p>
                 
                 <motion.p 
-                  className="text-lg mb-6 text-cyan-100"
+                  className="mb-6 text-cyan-100"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.6, duration: 0.7 }}
@@ -275,22 +291,22 @@ const AboutUs = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.7, duration: 0.7 }}
-                  className="flex flex-wrap gap-4"
+                  className="flex flex-wrap gap-3"
                 >
-                  <div className="px-6 py-3 bg-gradient-to-r from-cyan-600 to-blue-700 rounded-full text-white font-medium">
+                  <div className="px-4 py-2 bg-gradient-to-r from-cyan-600 to-blue-700 rounded-full text-white font-medium text-sm">
                     50+ Projects
                   </div>
-                  <div className="px-6 py-3 bg-gradient-to-r from-purple-600 to-fuchsia-700 rounded-full text-white font-medium">
+                  <div className="px-4 py-2 bg-gradient-to-r from-purple-600 to-fuchsia-700 rounded-full text-white font-medium text-sm">
                     15 Team Members
                   </div>
-                  <div className="px-6 py-3 bg-gradient-to-r from-pink-600 to-rose-700 rounded-full text-white font-medium">
+                  <div className="px-4 py-2 bg-gradient-to-r from-pink-600 to-rose-700 rounded-full text-white font-medium text-sm">
                     1M+ Users
                   </div>
                 </motion.div>
               </div>
               
               <motion.div 
-                className="grid grid-cols-2 gap-4"
+                className="grid grid-cols-2 gap-3"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
@@ -319,32 +335,32 @@ const AboutUs = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.7 }}
           >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-cyan-300">Meet Our Team</h2>
-              <p className="text-xl text-cyan-100 max-w-2xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-cyan-300">Meet Our Team</h2>
+              <p className="text-lg sm:text-xl text-cyan-100 max-w-2xl mx-auto">
                 The creative minds behind our innovative solutions
               </p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {teamMembers.map((member) => (
                 <motion.div
                   key={member.id}
-                  className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 backdrop-blur-lg rounded-2xl p-6 border border-purple-500/30"
+                  className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 backdrop-blur-lg rounded-2xl p-5 border border-purple-500/30"
                   whileHover={{ y: -10, boxShadow: "0 20px 40px rgba(0,0,0,0.3)" }}
                   transition={{ duration: 0.4 }}
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                 >
-                  <div className={`w-24 h-24 mx-auto rounded-full mb-6 bg-gradient-to-br ${member.color} flex items-center justify-center`}>
-                    <div className="text-3xl">👤</div>
+                  <div className={`w-20 h-20 mx-auto rounded-full mb-4 bg-gradient-to-br ${member.color} flex items-center justify-center`}>
+                    <div className="text-2xl">👤</div>
                   </div>
-                  <h3 className="text-2xl font-bold text-center mb-2">{member.name}</h3>
-                  <p className="text-cyan-300 text-center mb-4">{member.role}</p>
-                  <p className="text-cyan-100 text-center">{member.bio}</p>
+                  <h3 className="text-xl font-bold text-center mb-2">{member.name}</h3>
+                  <p className="text-cyan-300 text-center mb-3">{member.role}</p>
+                  <p className="text-cyan-100 text-center text-sm">{member.bio}</p>
                   
                   <div className="flex justify-center mt-4">
-                    <button className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-700 rounded-full text-sm">
+                    <button className="px-3 py-1 bg-gradient-to-r from-purple-600 to-indigo-700 rounded-full text-sm">
                       Contact
                     </button>
                   </div>
@@ -362,14 +378,14 @@ const AboutUs = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.7 }}
           >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-cyan-300">Our Expertise</h2>
-              <p className="text-xl text-cyan-100 max-w-2xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-cyan-300">Our Expertise</h2>
+              <p className="text-lg sm:text-xl text-cyan-100 max-w-2xl mx-auto">
                 Technologies we use to build amazing experiences
               </p>
             </div>
             
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-6">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-4">
               {skills.map((skill) => (
                 <motion.div
                   key={skill.id}
@@ -380,7 +396,7 @@ const AboutUs = () => {
                   onHoverStart={() => setActiveSkill(skill.id)}
                   onHoverEnd={() => setActiveSkill(null)}
                 >
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center bg-gradient-to-br ${skill.color} shadow-lg text-white`}>
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br ${skill.color} shadow-lg text-white`}>
                     <motion.div
                       animate={{ 
                         scale: activeSkill === skill.id ? 1.2 : 1,
@@ -392,7 +408,7 @@ const AboutUs = () => {
                     </motion.div>
                   </div>
                   <motion.div 
-                    className="mt-3 text-center"
+                    className="mt-2 text-center"
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ 
                       opacity: activeSkill === skill.id ? 1 : 0, 
@@ -400,16 +416,16 @@ const AboutUs = () => {
                     }}
                     transition={{ duration: 0.3 }}
                   >
-                    <span className="font-medium text-cyan-200 text-sm">{skill.name}</span>
+                    <span className="font-medium text-cyan-200 text-xs">{skill.name}</span>
                   </motion.div>
                 </motion.div>
               ))}
             </div>
             
-            <div className="mt-16 bg-gradient-to-r from-cyan-700/30 to-blue-800/30 backdrop-blur-lg rounded-3xl p-8 border border-cyan-500/30">
-              <h3 className="text-2xl font-bold mb-6 text-cyan-300 text-center">Our Development Process</h3>
+            <div className="mt-12 bg-gradient-to-r from-cyan-700/30 to-blue-800/30 backdrop-blur-lg rounded-3xl p-6 border border-cyan-500/30">
+              <h3 className="text-xl md:text-2xl font-bold mb-6 text-cyan-300 text-center">Our Development Process</h3>
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
                   { title: "Research", desc: "Deep dive into user needs and market trends" },
                   { title: "Design", desc: "Create intuitive and beautiful interfaces" },
@@ -417,13 +433,13 @@ const AboutUs = () => {
                 ].map((step, index) => (
                   <motion.div 
                     key={index}
-                    className="bg-gradient-to-br from-indigo-800/30 to-purple-800/30 p-6 rounded-2xl border border-purple-500/30"
+                    className="bg-gradient-to-br from-indigo-800/30 to-purple-800/30 p-5 rounded-2xl border border-purple-500/30"
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 * index }}
                   >
                     <div className="text-cyan-300 text-lg font-bold mb-2">{step.title}</div>
-                    <p className="text-cyan-100">{step.desc}</p>
+                    <p className="text-cyan-100 text-sm">{step.desc}</p>
                   </motion.div>
                 ))}
               </div>
@@ -439,27 +455,28 @@ const AboutUs = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.7 }}
           >
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-cyan-300">Get In Touch</h2>
-              <p className="text-xl text-cyan-100 max-w-2xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-cyan-300">Get In Touch</h2>
+              <p className="text-lg sm:text-xl text-cyan-100 max-w-2xl mx-auto">
                 Have questions or feedback? We'd love to hear from you!
               </p>
             </div>
             
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Review Form */}
               <motion.div 
-                className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 backdrop-blur-lg rounded-2xl p-8 border border-purple-500/30"
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
+                className="bg-gradient-to-br from-indigo-900/50 to-purple-900/50 backdrop-blur-lg rounded-2xl p-6 border border-purple-500/30"
+                initial={{ x: -30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
               >
-                <h3 className="text-2xl font-bold mb-6 text-cyan-300">Leave a Review</h3>
+                <h3 className="text-xl md:text-2xl font-bold mb-6 text-cyan-300">Leave a Review</h3>
                 
                 <form onSubmit={handleReviewSubmit}>
                   <div className="mb-4">
                     <label className="block text-cyan-200 mb-2">Your Name</label>
                     <input
                       type="text"
+                      name="name"
                       value={review.name}
                       onChange={(e) => setReview({...review, name: e.target.value})}
                       className="w-full bg-indigo-900/30 border border-indigo-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -472,6 +489,7 @@ const AboutUs = () => {
                     <label className="block text-cyan-200 mb-2">Your Email</label>
                     <input
                       type="email"
+                      name="email"
                       value={review.email}
                       onChange={(e) => setReview({...review, email: e.target.value})}
                       className="w-full bg-indigo-900/30 border border-indigo-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -491,7 +509,7 @@ const AboutUs = () => {
                           className="text-amber-400 mr-1"
                         >
                           <FaStar 
-                            size={24} 
+                            size={20} 
                             className={star <= review.rating ? 'text-amber-400' : 'text-gray-500'} 
                           />
                         </button>
@@ -502,6 +520,7 @@ const AboutUs = () => {
                   <div className="mb-6">
                     <label className="block text-cyan-200 mb-2">Your Review</label>
                     <textarea
+                      name="comment"
                       value={review.comment}
                       onChange={(e) => setReview({...review, comment: e.target.value})}
                       className="w-full bg-indigo-900/30 border border-indigo-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
@@ -535,17 +554,18 @@ const AboutUs = () => {
               
               {/* Request Form */}
               <motion.div 
-                className="bg-gradient-to-br from-pink-900/50 to-rose-900/50 backdrop-blur-lg rounded-2xl p-8 border border-pink-500/30"
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
+                className="bg-gradient-to-br from-pink-900/50 to-rose-900/50 backdrop-blur-lg rounded-2xl p-6 border border-pink-500/30"
+                initial={{ x: 30, opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
               >
-                <h3 className="text-2xl font-bold mb-6 text-cyan-300">Request Content</h3>
+                <h3 className="text-xl md:text-2xl font-bold mb-6 text-cyan-300">Request Content</h3>
                 
                 <form onSubmit={handleRequestSubmit}>
                   <div className="mb-4">
                     <label className="block text-cyan-200 mb-2">Your Name</label>
                     <input
                       type="text"
+                      name="name"
                       value={request.name}
                       onChange={(e) => setRequest({...request, name: e.target.value})}
                       className="w-full bg-pink-900/30 border border-pink-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -558,6 +578,7 @@ const AboutUs = () => {
                     <label className="block text-cyan-200 mb-2">Your Email</label>
                     <input
                       type="email"
+                      name="email"
                       value={request.email}
                       onChange={(e) => setRequest({...request, email: e.target.value})}
                       className="w-full bg-pink-900/30 border border-pink-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -569,6 +590,7 @@ const AboutUs = () => {
                   <div className="mb-4">
                     <label className="block text-cyan-200 mb-2">Content Type</label>
                     <select
+                      name="type"
                       value={request.type}
                       onChange={(e) => setRequest({...request, type: e.target.value})}
                       className="w-full bg-pink-900/30 border border-pink-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -585,6 +607,7 @@ const AboutUs = () => {
                   <div className="mb-6">
                     <label className="block text-cyan-200 mb-2">Your Request</label>
                     <textarea
+                      name="message"
                       value={request.message}
                       onChange={(e) => setRequest({...request, message: e.target.value})}
                       className="w-full bg-pink-900/30 border border-pink-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
@@ -610,20 +633,21 @@ const AboutUs = () => {
                   <h4 className="text-lg font-bold mb-4 text-cyan-300">Download Demo</h4>
                   <p className="text-cyan-100 mb-4">Try our sample download experience:</p>
                   
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3">
                     {['480p', '720p', '1080p', '4K'].map((quality, index) => (
                       <motion.button
                         key={index}
-                        className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-700/50 to-indigo-700/50 p-3 rounded-lg border border-purple-500/30"
+                        className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-700/50 to-indigo-700/50 p-2 sm:p-3 rounded-lg border border-purple-500/30"
                         whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
                       >
-                        <FaDownload className="text-cyan-300" />
-                        <span className="text-cyan-200">{quality}</span>
+                        <FaDownload className="text-cyan-300 text-sm" />
+                        <span className="text-cyan-200 text-sm">{quality}</span>
                       </motion.button>
                     ))}
                   </div>
                   
-                  {/* Like Button with Fix */}
+                  {/* Like Button */}
                   <div className="mt-6 flex items-center justify-center">
                     <motion.button
                       className={`flex items-center gap-2 px-4 py-2 rounded-full ${
@@ -647,17 +671,17 @@ const AboutUs = () => {
 
         {/* Mission Statement */}
         <motion.div 
-          className="bg-gradient-to-br from-cyan-700/30 to-blue-800/30 backdrop-blur-lg rounded-3xl p-8 md:p-12 my-16 border border-cyan-500/30"
+          className="bg-gradient-to-br from-cyan-700/30 to-blue-800/30 backdrop-blur-lg rounded-3xl p-6 md:p-8 my-16 border border-cyan-500/30"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.7 }}
         >
           <div className="max-w-4xl mx-auto text-center">
-            <div className="text-6xl mb-6 text-cyan-300">❝</div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-white">
+            <div className="text-5xl mb-4 text-cyan-300">❝</div>
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">
               Our mission is to create digital experiences that inspire, empower, and transform
             </h2>
-            <p className="text-xl text-cyan-100">
+            <p className="text-lg text-cyan-100">
               We believe in the power of technology to solve complex problems and create meaningful connections. 
               Every line of code we write and every design we create is driven by our passion for innovation 
               and our commitment to excellence.
@@ -672,11 +696,11 @@ const AboutUs = () => {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.7 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Ready to start your journey?</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-6 text-white">Ready to start your journey?</h2>
           <motion.a
             href='/'
-            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-8 py-4 rounded-full font-bold text-lg shadow-lg shadow-cyan-500/30"
-            whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(0, 224, 255, 0.5)", transition: `all .6s ease-in-out` }}
+            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white px-6 py-3 rounded-xl font-bold text-lg shadow-lg shadow-cyan-500/30"
+            whileHover={{ scale: 1.05, boxShadow: "0 0 25px rgba(0, 224, 255, 0.5)" }}
             whileTap={{ scale: 0.95 }}
           >
             Join Us Today

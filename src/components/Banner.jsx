@@ -98,7 +98,7 @@ const Hero = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
-  const float = {
+   const float = {
     float: {
       y: [0, -15, 0],
       transition: {
@@ -183,9 +183,9 @@ const Hero = () => {
             data-aos="fade-up"
             data-aos-delay="100"
           >
-            Download your favorite <span className="text-[#228DFF]">Games</span>
-            , <span className="text-[#6C5DD3]">Anime</span> &{" "}
-            <span className="text-[#FF5E3A]">Movies</span> from a single
+            Download your favorite <a href="/search" className="text-[#228DFF]">Games</a>
+            , <a href="/search" className="text-[#6C5DD3]">Anime</a> &{" "}
+            <a href="/search" className="text-[#FF5E3A]">Movies</a> from a single
             futuristic hub.
           </motion.p>
 
@@ -221,13 +221,20 @@ const Hero = () => {
                 data-aos="fade-up"
                 data-aos-delay={200 + index * 100}
               >
-                <motion.div
-                  className="text-4xl mb-2"
-                  variants={float}
-                  animate="float"
-                >
-                  {item.icon}
-                </motion.div>
+                {!isMobile && (
+                  <motion.div
+                    className="text-4xl mb-2"
+                    variants={float}
+                    animate="float"
+                  >
+                    {item.icon}
+                  </motion.div>
+                )}
+                {isMobile && (
+                  <div className="text-4xl mb-2">
+                    {item.icon}
+                  </div>
+                )}
                 <h2 className={`text-xl font-semibold mb-1 ${item.color}`}>
                   {item.title}
                 </h2>
@@ -502,10 +509,10 @@ const Hero = () => {
                       "PCApp": "pcApps",
                       "AndroidApp": "androidApps",
                       "ModApk": "modApks",
-                      "Media": "media"
+                      "Movie": "movies"
                     };
                     
-                    const collection = collectionMap[item.type] || "media";
+                    const collection = collectionMap[item.type] || "movies";
                     
                     return (
                       <motion.div

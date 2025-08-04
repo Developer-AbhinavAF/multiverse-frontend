@@ -31,7 +31,7 @@ const Navbar = () => {
         </a>
       </li>
       <li>
-        <a href="#contact" className="hover:text-[#00E0FF] duration-200">
+        <a href="/contact" className="hover:text-[#00E0FF] duration-200">
           Contact
         </a>
       </li>
