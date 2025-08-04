@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -26,19 +26,19 @@ const Navbar = () => {
   const navItems = (
     <>
       <li>
-        <a href="/" className="hover:text-[#00E0FF] duration-200">
+        <Link to="/" className="hover:text-[#00E0FF] duration-200">
           Home
-        </a>
+        </Link>
       </li>
       <li>
-        <a href="/contact" className="hover:text-[#00E0FF] duration-200">
+        <Link to="/contact" className="hover:text-[#00E0FF] duration-200">
           Contact
-        </a>
+        </Link>
       </li>
       <li>
-        <a href="/about-us" className="hover:text-[#00E0FF] duration-200">
+        <Link to="/about-us" className="hover:text-[#00E0FF] duration-200">
           About
-        </a>
+        </Link>
       </li>
     </>
   );
