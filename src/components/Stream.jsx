@@ -22,15 +22,13 @@ const Stream = () => {
 
   const endpoints = {
     movies: "https://multiverse-backend.onrender.com/api/movies",
-    pcGames: "https://multiverse-backend.onrender.com/api/pcGames",
-    androidGames: "https://multiverse-backend.onrender.com/api/androidGames",
-    iosGames: "https://multiverse-backend.onrender.com/api/iosGames",
     animeMovie: "https://multiverse-backend.onrender.com/api/animeMovie",
     animeSeries: "https://multiverse-backend.onrender.com/api/animeSeries",
     webSeries: "https://multiverse-backend.onrender.com/api/webSeries",
-    pcApps: "https://multiverse-backend.onrender.com/api/pcApps",
-    androidApps: "https://multiverse-backend.onrender.com/api/androidApps",
-    modApks: "https://multiverse-backend.onrender.com/api/modApks"
+    kDramas: "https://multiverse-backend.onrender.com/api/kDramas",
+    cDramas: "https://multiverse-backend.onrender.com/api/cDramas",
+    thaiDramas: "https://multiverse-backend.onrender.com/api/thaiDramas",
+    japaneseDramas: "https://multiverse-backend.onrender.com/api/japaneseDramas"
   };
 
   const fetchMedia = async () => {
@@ -50,7 +48,7 @@ const Stream = () => {
         setLikeCount(response.data.likes || 0);
         
         // Set first episode as default if series
-        if (['animeSeries', 'webSeries'].includes(response.data.type)) {
+        if (['animeSeries', 'webSeries', 'kDramas', 'cDramas', 'thaiDramas', 'japaneseDramas'].includes(response.data.type)) {
           const firstSeason = response.data.seasons?.[0];
           if (firstSeason && firstSeason.episodes?.[0]) {
             setSelectedEpisode({
@@ -305,7 +303,7 @@ const Stream = () => {
             </button>
 
             {/* Download Series Button */}
-            {['animeSeries', 'webSeries'].includes(media.type) && media.downloadable && (
+            {['animeSeries', 'webSeries', 'kDramas', 'cDramas', 'thaiDramas', 'japaneseDramas'].includes(media.type) && media.downloadable && (
               <a
                 href="#"
                 className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 rounded-xl shadow-lg transition text-white"
@@ -374,7 +372,7 @@ const Stream = () => {
                   <span>Language:</span>
                   <span className="text-white">{selectedLanguage}</span>
                 </div>
-                {['animeSeries', 'webSeries'].includes(media.type) && (
+                {['animeSeries', 'webSeries', 'kDramas', 'cDramas', 'thaiDramas', 'japaneseDramas'].includes(media.type) && (
                   <div className="flex justify-between">
                     <span>Downloadable:</span>
                     <span className="text-white">{media.downloadable ? "Yes" : "No"}</span>

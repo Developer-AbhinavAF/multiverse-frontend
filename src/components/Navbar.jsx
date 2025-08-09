@@ -31,6 +31,11 @@ const Navbar = () => {
         </Link>
       </li>
       <li>
+        <Link to="/updates" className="hover:text-[#00E0FF] duration-200">
+          Updates
+        </Link>
+      </li>
+      <li>
         <Link to="/contact" className="hover:text-[#00E0FF] duration-200">
           Contact
         </Link>

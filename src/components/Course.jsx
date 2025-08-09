@@ -23,25 +23,23 @@ const Courses = () => {
   const searchInputRef = useRef(null);
   const limit = 20;
 
-  // Updated endpoints with Render.com URL
+  // Updated endpoints with drama collections
   const endpoints = [
     "https://multiverse-backend.onrender.com/api/movies",
-    "https://multiverse-backend.onrender.com/api/pcGames",
-    "https://multiverse-backend.onrender.com/api/androidGames",
-    "https://multiverse-backend.onrender.com/api/iosGames",
     "https://multiverse-backend.onrender.com/api/animeMovie",
     "https://multiverse-backend.onrender.com/api/animeSeries",
     "https://multiverse-backend.onrender.com/api/webSeries",
-    "https://multiverse-backend.onrender.com/api/pcApps",
-    "https://multiverse-backend.onrender.com/api/androidApps",
-    "https://multiverse-backend.onrender.com/api/modApks"
+    "https://multiverse-backend.onrender.com/api/kDramas",
+    "https://multiverse-backend.onrender.com/api/cDramas",
+    "https://multiverse-backend.onrender.com/api/thaiDramas",
+    "https://multiverse-backend.onrender.com/api/japaneseDramas"
   ];
 
   const fetchAllMedia = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-
+      
       // Fetch from all endpoints
       const responses = await Promise.all(
         endpoints.map(endpoint => 
@@ -96,10 +94,9 @@ const Courses = () => {
     .filter(item => {
       if (activeFilter === "all") return true;
       if (activeFilter === "movie") return item.type === "movie" || item.type === "animeMovie";
-      if (activeFilter === "game") return item.type.includes("Game");
       if (activeFilter === "anime") return item.type.includes("anime");
       if (activeFilter === "series") return item.type === "webSeries" || item.type === "animeSeries";
-      if (activeFilter === "app") return item.type.includes("App") || item.type === "modApk";
+      if (activeFilter === "drama") return item.type.includes("Drama");
       return true;
     })
     // Filter by quality
@@ -134,10 +131,9 @@ const Courses = () => {
   const filters = [
     { id: "all", label: "All Media" },
     { id: "movie", label: "Movies" },
-    { id: "game", label: "Games" },
     { id: "anime", label: "Anime" },
     { id: "series", label: "Series" },
-    { id: "app", label: "Apps" },
+    { id: "drama", label: "Dramas" },
   ];
 
   const qualityOptions = [

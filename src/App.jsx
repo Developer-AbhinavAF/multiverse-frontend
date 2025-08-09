@@ -8,6 +8,7 @@ import Footer from "./components/Footer";
 import Stream from "./components/Stream";
 import AboutUs from "./components/About";
 import Contact from "./components/Contact";
+import LatestUpdates from "./components/LatestUpdates";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
           <Route path="/media/:slug" element={<Mediator />} />
           <Route path="/stream/:slug" element={<Stream />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/updates" element={<LatestUpdates />} />
         </Routes>
         <Footer />
         <Toaster />
