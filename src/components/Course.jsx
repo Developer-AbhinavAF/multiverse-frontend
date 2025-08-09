@@ -26,46 +26,37 @@ const Courses = () => {
 
   // Updated endpoints with drama collections
   const endpoints = [
-    "https://multiverse-backend.onrender.com/api/movies",
-    "https://multiverse-backend.onrender.com/api/animeMovie",
-    "https://multiverse-backend.onrender.com/api/animeSeries",
-    "https://multiverse-backend.onrender.com/api/webSeries",
-    "https://multiverse-backend.onrender.com/api/kDramas",
-    "https://multiverse-backend.onrender.com/api/cDramas",
-    "https://multiverse-backend.onrender.com/api/thaiDramas",
-    "https://multiverse-backend.onrender.com/api/japaneseDramas",
+    "/api/movies",
+    "/api/animeMovie",
+    "/api/animeSeries",
+    "/api/webSeries",
+    "/api/kDramas", // Plural
+    "/api/cDramas", // Plural
+    "/api/thaiDramas", // Plural - must match server route
+    "/api/japaneseDramas", // Plural
   ];
-
-  // Courses.jsx - Updated fetch function
-  // Courses.jsx
   const fetchAllMedia = useCallback(async () => {
     try {
       const responses = await Promise.allSettled(
-        [
-          "movies",
-          "animeMovie",
-          "animeSeries",
-          "webSeries",
-          "kDramas",
-          "cDramas",
-          "thaiDramas",
-          "japaneseDramas",
-        ].map((type) =>
-          mediaAPI.getAll(type, {
-            search: submittedSearch,
-            page: 1,
-            limit: 100,
+        endpoints.map((endpoint) =>
+          axios.get(endpoint, {
+            params: { search: submittedSearch, page: 1, limit: 100 },
           })
         )
       );
 
-      const allResults = responses.flatMap((response) =>
-        response.status === "fulfilled" ? response.value.data.results : []
-      );
+      responses.forEach((response, index) => {
+        if (response.status === "rejected") {
+          console.error(
+            `Error fetching ${endpoints[index]}:`,
+            response.reason.message
+          );
+        }
+      });
 
-      setMedia(allResults);
+      // ... rest of your code ...
     } catch (err) {
-      setError(`Fetch failed: ${err.message}`);
+      console.error("Global fetch error:", err);
     }
   }, [submittedSearch]);
 
