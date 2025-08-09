@@ -1,5 +1,12 @@
 import axios from 'axios';
 
+const BASE_URL = "https://multiverse-backend.onrender.com/api"; // <-- Change this to your backend URL
+
+export async function fetchMovies(params) {
+  const res = await fetch(`${BASE_URL}/movies?${params}`);
+  return res.json();
+}
+
 const API = axios.create({
   baseURL: process.env.REACT_APP_API_URL || 'https://multiverse-backend.onrender.com/api',
   timeout: 10000,
