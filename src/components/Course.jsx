@@ -26,14 +26,14 @@ const Courses = () => {
 
   // Updated endpoints with drama collections
   const endpoints = [
-    "/api/movies",
-    "/api/animeMovie",
-    "/api/animeSeries",
-    "/api/webSeries",
-    "/api/kDramas", // Plural
-    "/api/cDramas", // Plural
-    "/api/thaiDramas", // Plural - must match server route
-    "/api/japaneseDramas", // Plural
+    "https://multiverse-backend.onrender.com/api/movies",
+    "https://multiverse-backend.onrender.com/api/animeMovie",
+    "https://multiverse-backend.onrender.com/api/animeSeries",
+    "https://multiverse-backend.onrender.com/api/webSeries",
+    "https://multiverse-backend.onrender.com/api/kDramas",       // Plural
+    "https://multiverse-backend.onrender.com/api/cDramas",       // Plural
+    "https://multiverse-backend.onrender.com/api/thaiDramas",    // Plural
+    "https://multiverse-backend.onrender.com/api/japaneseDramas" // Plural
   ];
   const fetchAllMedia = useCallback(async () => {
     try {
