@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cards from "./Cards";
+import { mediaAPI } from "../services/api";
 
 const Courses = () => {
   const navigate = useNavigate();
@@ -32,37 +33,39 @@ const Courses = () => {
     "https://multiverse-backend.onrender.com/api/kDramas",
     "https://multiverse-backend.onrender.com/api/cDramas",
     "https://multiverse-backend.onrender.com/api/thaiDramas",
-    "https://multiverse-backend.onrender.com/api/japaneseDramas"
+    "https://multiverse-backend.onrender.com/api/japaneseDramas",
   ];
 
+  // Courses.jsx - Updated fetch function
+  // Courses.jsx
   const fetchAllMedia = useCallback(async () => {
     try {
-      setLoading(true);
-      setError(null);
-      
-      // Fetch from all endpoints
-      const responses = await Promise.all(
-        endpoints.map(endpoint => 
-          axios.get(endpoint, {
-            params: {
-              search: submittedSearch,
-              page: 1,  // Always request first page from each endpoint
-              limit: 100
-            }
+      const responses = await Promise.allSettled(
+        [
+          "movies",
+          "animeMovie",
+          "animeSeries",
+          "webSeries",
+          "kDramas",
+          "cDramas",
+          "thaiDramas",
+          "japaneseDramas",
+        ].map((type) =>
+          mediaAPI.getAll(type, {
+            search: submittedSearch,
+            page: 1,
+            limit: 100,
           })
         )
       );
 
-      // Combine all results
-      const allResults = responses.flatMap(response => response.data.results || []);
-      
+      const allResults = responses.flatMap((response) =>
+        response.status === "fulfilled" ? response.value.data.results : []
+      );
+
       setMedia(allResults);
-      setTotalPages(Math.ceil(allResults.length / limit));
     } catch (err) {
-      console.error("Fetch error:", err);
-      setError("Failed to fetch media. Please try again later.");
-    } finally {
-      setLoading(false);
+      setError(`Fetch failed: ${err.message}`);
     }
   }, [submittedSearch]);
 
@@ -91,23 +94,25 @@ const Courses = () => {
   // Apply filters and sorting
   const filteredMedia = [...media]
     // Filter by category
-    .filter(item => {
+    .filter((item) => {
       if (activeFilter === "all") return true;
-      if (activeFilter === "movie") return item.type === "movie" || item.type === "animeMovie";
+      if (activeFilter === "movie")
+        return item.type === "movie" || item.type === "animeMovie";
       if (activeFilter === "anime") return item.type.includes("anime");
-      if (activeFilter === "series") return item.type === "webSeries" || item.type === "animeSeries";
+      if (activeFilter === "series")
+        return item.type === "webSeries" || item.type === "animeSeries";
       if (activeFilter === "drama") return item.type.includes("Drama");
       return true;
     })
     // Filter by quality
-    .filter(item => {
+    .filter((item) => {
       if (qualityFilter === "all") return true;
       return item.qualities && item.qualities[qualityFilter];
     })
     // Filter by rating
-    .filter(item => item.rating >= ratingFilter)
+    .filter((item) => item.rating >= ratingFilter)
     // Filter by year
-    .filter(item => {
+    .filter((item) => {
       if (!yearFilter) return true;
       const year = new Date(item.releaseDate).getFullYear();
       return year === parseInt(yearFilter);
@@ -151,9 +156,13 @@ const Courses = () => {
   ];
 
   // Get unique years
-  const years = [...new Set(media.map(item => 
-    new Date(item.releaseDate).getFullYear()
-  ).filter(year => !isNaN(year)))].sort((a, b) => b - a);
+  const years = [
+    ...new Set(
+      media
+        .map((item) => new Date(item.releaseDate).getFullYear())
+        .filter((year) => !isNaN(year))
+    ),
+  ].sort((a, b) => b - a);
 
   // Animation variants
   const containerVariants = {
@@ -344,7 +353,7 @@ const Courses = () => {
               ))}
             </div>
           </div>
-          
+
           {/* Quality Filter */}
           <div>
             <label className="block text-sm font-medium text-cyan-200 mb-2">
@@ -368,7 +377,7 @@ const Courses = () => {
               ))}
             </div>
           </div>
-          
+
           {/* Rating Filter */}
           <div>
             <label className="block text-sm font-medium text-cyan-200 mb-2">
@@ -388,7 +397,7 @@ const Courses = () => {
               </div>
             </div>
           </div>
-          
+
           {/* Year Filter */}
           <div>
             <label className="block text-sm font-medium text-cyan-200 mb-2">
@@ -400,13 +409,15 @@ const Courses = () => {
               className="w-full bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-700 text-white py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
             >
               <option value="">All Years</option>
-              {years.map(year => (
-                <option key={year} value={year}>{year}</option>
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
               ))}
             </select>
           </div>
         </div>
-        
+
         {/* Sort Options */}
         <div className="flex justify-between items-center mb-8">
           <div className="text-cyan-200 text-sm">
@@ -419,8 +430,10 @@ const Courses = () => {
               onChange={(e) => setSortOption(e.target.value)}
               className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-700 text-white py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
             >
-              {sortOptions.map(option => (
-                <option key={option.id} value={option.id}>{option.label}</option>
+              {sortOptions.map((option) => (
+                <option key={option.id} value={option.id}>
+                  {option.label}
+                </option>
               ))}
             </select>
           </div>
@@ -468,10 +481,7 @@ const Courses = () => {
                         className="flex flex-col h-full w-full cursor-pointer group"
                         onClick={() => handleCardClick(item)}
                       >
-                        <Cards
-                          item={item}
-                          collection={item.type}
-                        />
+                        <Cards item={item} collection={item.type} />
                       </motion.div>
                     ))}
                   </AnimatePresence>
