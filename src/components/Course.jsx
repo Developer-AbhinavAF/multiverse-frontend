@@ -43,7 +43,7 @@ const Courses = () => {
 
       const responses = await Promise.allSettled(
         endpoints.map(endpoint => 
-          axios.get(`${BASE_URL}${endpoint}`, { // Use BASE_URL from config
+          axios.get(`https://multiverse-backend.onrender.com/api${endpoint}`, { // Use BASE_URL from config
             params: { search: submittedSearch, page: 1, limit: 100 },
             timeout: 10000,
           })
