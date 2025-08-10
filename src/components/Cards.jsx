@@ -1,19 +1,19 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import config from '../config';
+import config from "../config";
 
 function Cards({ item, collection }) {
   const [showTooltip, setShowTooltip] = useState(false);
 
   const getImageUrl = (path) => {
     if (!path) return null;
-    if (path.startsWith('http')) return path;
+    if (path.startsWith("http")) return path;
     return `${config.BASE_URL}${path}`;
   };
-  
+
   // Map collections to display types
-   const collectionTypeMap = {
+  const collectionTypeMap = {
     movies: "Movie",
     animeMovie: "Anime Movie",
     animeSeries: "Anime Series",
@@ -21,14 +21,16 @@ function Cards({ item, collection }) {
     kDramas: "K-Drama",
     cDramas: "C-Drama",
     thaiDramas: "Thai Drama",
-    japaneseDramas: "Japanese Drama"
+    japaneseDramas: "Japanese Drama",
   };
 
   // Fixed quality detection
+  // Update the getQualities function:
   const getQualities = () => {
     if (!item.qualities) return [];
-    return Object.keys(item.qualities).filter(quality => 
-      item.qualities[quality] && item.qualities[quality].downloadUrl
+    return Object.keys(item.qualities).filter(
+      (quality) =>
+        item.qualities[quality] && item.qualities[quality].downloadUrl
     );
   };
 
@@ -42,14 +44,14 @@ function Cards({ item, collection }) {
       kDramas: "bg-rose-600",
       cDramas: "bg-amber-600",
       thaiDramas: "bg-emerald-600",
-      japaneseDramas: "bg-violet-600"
+      japaneseDramas: "bg-violet-600",
     };
     return colorMap[collection] || "bg-gray-600";
   };
 
   return (
     <Link to={`/media/${item.slug}?collection=${collection}`}>
-      <motion.div 
+      <motion.div
         className="w-full bg-[#161626] text-white p-3 rounded-xl border border-[#2D2D42] shadow-md hover:shadow-lg transition-all duration-300 ease-in-out transform hover:-translate-y-1"
         whileHover={{ scale: 1.03 }}
       >
@@ -61,17 +63,19 @@ function Cards({ item, collection }) {
               <div className="text-5xl text-gray-500">🎬</div>
             </div>
           )}
-          
+
           <div className="absolute top-2 right-2 flex gap-2">
             <span
-              className={`px-2 py-1 text-white text-xs rounded-md ${getTypeColor(collection)}`}
+              className={`px-2 py-1 text-white text-xs rounded-md ${getTypeColor(
+                collection
+              )}`}
             >
               {collectionTypeMap[collection] || collection}
             </span>
           </div>
         </div>
 
-        <div 
+        <div
           className="relative mt-3"
           onMouseEnter={() => setShowTooltip(true)}
           onMouseLeave={() => setShowTooltip(false)}
@@ -79,18 +83,18 @@ function Cards({ item, collection }) {
           <h2 className="text-sm sm:text-base font-bold line-clamp-1">
             {item.title}
           </h2>
-          
+
           {showTooltip && item.title.length > 20 && (
             <div className="absolute bottom-full left-0 mb-2 p-2 bg-black/80 text-white text-xs rounded-md z-10">
               {item.title}
             </div>
           )}
         </div>
-        
+
         <div className="flex gap-2 mt-2 flex-wrap">
           {item.genres?.slice(0, 2).map((genre, index) => (
-            <span 
-              key={index} 
+            <span
+              key={index}
               className="px-1 py-0.5 bg-gradient-to-r from-indigo-600/30 to-purple-600/30 text-indigo-300 rounded-full text-xs"
             >
               {genre.substring(0, 12)}
@@ -103,16 +107,18 @@ function Cards({ item, collection }) {
             <span>⭐</span>
             <span>{item.rating || "N/A"}</span>
           </div>
-          
+
           <div className="flex gap-1">
-            {getQualities().slice(0, 2).map(quality => (
-              <span 
-                key={quality} 
-                className="px-1 py-0.5 bg-gray-800/50 text-[10px] sm:text-xs rounded"
-              >
-                {quality}
-              </span>
-            ))}
+            {getQualities()
+              .slice(0, 2)
+              .map((quality) => (
+                <span
+                  key={quality}
+                  className="px-1 py-0.5 bg-gray-800/50 text-[10px] sm:text-xs rounded"
+                >
+                  {quality}
+                </span>
+              ))}
           </div>
         </div>
       </motion.div>
