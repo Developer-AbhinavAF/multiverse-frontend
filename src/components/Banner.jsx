@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useNavigate } from "react-router-dom";
+import config from "../config";
 
 const Hero = () => {
   const [search, setSearch] = useState("");
@@ -17,9 +18,16 @@ const Hero = () => {
 
   // Collections to search
   const collections = [
-    "movies", "pcGames", "androidGames", "iosGames", 
-    "animeMovie", "animeSeries", "webSeries",
-    "pcApps", "androidApps", "modApks"
+    "movies",
+    "pcGames",
+    "androidGames",
+    "iosGames",
+    "animeMovie",
+    "animeSeries",
+    "webSeries",
+    "pcApps",
+    "androidApps",
+    "modApks",
   ];
 
   // Initialize AOS
@@ -52,16 +60,16 @@ const Hero = () => {
 
     try {
       // Search all collections in parallel
-      const requests = collections.map(collection => 
-        axios.get(`https://multiverse-backend.onrender.com/api/${collection}`, {
-          params: { search, limit: 5 }
+      const requests = collections.map((collection) =>
+        axios.get(`${config.BASE_URL}/api/${collection}`, {
+          params: { search, limit: 5 },
         })
       );
 
       const responses = await Promise.all(requests);
-      const combinedResults = responses.flatMap(response => 
-        response.data?.results || []
-      ).slice(0, 8); // Limit to 8 results
+      const combinedResults = responses
+        .flatMap((response) => response.data?.results || [])
+        .slice(0, 8); // Limit to 8 results
 
       setResults(combinedResults);
     } catch (err) {
@@ -86,10 +94,34 @@ const Hero = () => {
 
   // Trending items data
   const trendingItems = [
-    { title: "Elden Ring", size: "45.7 GB", status: "Gone", statusColor: "text-[#00E0FF]", icon: "🎮" },
-    { title: "Movies", size: "2.5 GB", status: "Now", statusColor: "text-[#FF5E3A]", icon: "🎬" },
-    { title: "Attack on Titan", size: "820 MB", status: "Arima", statusColor: "text-[#6C5DD3]", icon: "🧿" },
-    { title: "Spider-Man: No Way Home", size: "2.1 GB", status: "Move", statusColor: "text-[#228DFF]", icon: "🕸️" },
+    {
+      title: "Elden Ring",
+      size: "45.7 GB",
+      status: "Gone",
+      statusColor: "text-[#00E0FF]",
+      icon: "🎮",
+    },
+    {
+      title: "Movies",
+      size: "2.5 GB",
+      status: "Now",
+      statusColor: "text-[#FF5E3A]",
+      icon: "🎬",
+    },
+    {
+      title: "Attack on Titan",
+      size: "820 MB",
+      status: "Arima",
+      statusColor: "text-[#6C5DD3]",
+      icon: "🧿",
+    },
+    {
+      title: "Spider-Man: No Way Home",
+      size: "2.1 GB",
+      status: "Move",
+      statusColor: "text-[#228DFF]",
+      icon: "🕸️",
+    },
   ];
 
   // Animation variants
@@ -98,7 +130,7 @@ const Hero = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
-   const float = {
+  const float = {
     float: {
       y: [0, -15, 0],
       transition: {
@@ -183,10 +215,19 @@ const Hero = () => {
             data-aos="fade-up"
             data-aos-delay="100"
           >
-            Download your favorite <a href="/search" className="text-[#228DFF]">Games</a>
-            , <a href="/search" className="text-[#6C5DD3]">Anime</a> &{" "}
-            <a href="/search" className="text-[#FF5E3A]">Movies</a> from a single
-            futuristic hub.
+            Download your favorite{" "}
+            <a href="/search" className="text-[#228DFF]">
+              Games
+            </a>
+            ,{" "}
+            <a href="/search" className="text-[#6C5DD3]">
+              Anime
+            </a>{" "}
+            &{" "}
+            <a href="/search" className="text-[#FF5E3A]">
+              Movies
+            </a>{" "}
+            from a single futuristic hub.
           </motion.p>
 
           {/* Category Cards */}
@@ -230,11 +271,7 @@ const Hero = () => {
                     {item.icon}
                   </motion.div>
                 )}
-                {isMobile && (
-                  <div className="text-4xl mb-2">
-                    {item.icon}
-                  </div>
-                )}
+                {isMobile && <div className="text-4xl mb-2">{item.icon}</div>}
                 <h2 className={`text-xl font-semibold mb-1 ${item.color}`}>
                   {item.title}
                 </h2>
@@ -500,20 +537,20 @@ const Hero = () => {
                 ? results.map((item, index) => {
                     // Determine collection for this item
                     const collectionMap = {
-                      "PCGame": "pcGames",
-                      "AndroidGame": "androidGames",
-                      "IOSGame": "iosGames",
-                      "AnimeMovie": "animeMovie",
-                      "AnimeSeries": "animeSeries",
-                      "WebSeries": "webSeries",
-                      "PCApp": "pcApps",
-                      "AndroidApp": "androidApps",
-                      "ModApk": "modApks",
-                      "Movie": "movies"
+                      PCGame: "pcGames",
+                      AndroidGame: "androidGames",
+                      IOSGame: "iosGames",
+                      AnimeMovie: "animeMovie",
+                      AnimeSeries: "animeSeries",
+                      WebSeries: "webSeries",
+                      PCApp: "pcApps",
+                      AndroidApp: "androidApps",
+                      ModApk: "modApks",
+                      Movie: "movies",
                     };
-                    
+
                     const collection = collectionMap[item.type] || "movies";
-                    
+
                     return (
                       <motion.div
                         key={item._id}
@@ -529,19 +566,23 @@ const Hero = () => {
                         <div className="bg-[#161626] border border-[#2D2D42] rounded-xl p-5 transition-all hover:border-[#6C5DD3] hover:shadow-lg hover:shadow-[#6C5DD3]/20 cursor-pointer">
                           <div className="bg-gray-700 rounded-xl w-full h-48 mb-4 flex items-center justify-center">
                             {item.thumbnail ? (
-                              <img 
-                                src={item.thumbnail} 
-                                alt={item.title} 
+                              <img
+                                src={item.thumbnail}
+                                alt={item.title}
                                 className="w-full h-full object-cover rounded-xl"
                               />
                             ) : (
                               <span className="text-6xl">📁</span>
                             )}
                           </div>
-                          <h3 className="font-bold text-lg mb-2">{item.title}</h3>
+                          <h3 className="font-bold text-lg mb-2">
+                            {item.title}
+                          </h3>
                           <div className="flex justify-between text-sm text-[#A0A0B2] mb-3">
                             <span>{collection}</span>
-                            <span>{item.fileSize || item.gameSize || "Unknown"}</span>
+                            <span>
+                              {item.fileSize || item.gameSize || "Unknown"}
+                            </span>
                           </div>
                           <div className="flex justify-between items-center">
                             <span className="text-[#00E0FF] text-sm">
@@ -555,7 +596,8 @@ const Hero = () => {
                       </motion.div>
                     );
                   })
-                : searched && !loading && (
+                : searched &&
+                  !loading && (
                     <motion.div
                       className="text-center col-span-full py-12"
                       initial={{ opacity: 0 }}

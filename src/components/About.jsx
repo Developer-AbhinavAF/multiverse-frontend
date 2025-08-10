@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import config from '../config';
 import { FaTwitter, FaGithub, FaLinkedin, FaHeart, FaStar, FaDownload } from 'react-icons/fa';
 
 const AboutUs = () => {

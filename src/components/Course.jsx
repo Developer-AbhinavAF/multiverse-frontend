@@ -4,7 +4,9 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cards from "./Cards";
 import { mediaAPI } from "../services/api";
-import { BASE_URL } from './config';
+import config from '../config';
+
+
 
 const Courses = () => {
   const navigate = useNavigate();
@@ -27,14 +29,14 @@ const Courses = () => {
 
   // Updated endpoints with drama collections
   const endpoints = [
-    "/api/movies",
-    "/api/animeMovie",
-    "/api/animeSeries",
-    "/api/webSeries",
-    "/api/kDramas",
-    "/api/cDramas",
-    "/api/thaiDramas",
-    "/api/japaneseDramas",
+    `${config.BASE_URL}/api/movies`,
+    `${config.BASE_URL}/api/animeMovie`,
+    `${config.BASE_URL}/api/animeSeries`,
+    `${config.BASE_URL}/api/webSeries`,
+    `${config.BASE_URL}/api/kDramas`,
+    `${config.BASE_URL}/api/cDramas`,
+    `${config.BASE_URL}/api/thaiDramas`,
+    `${config.BASE_URL}/api/japaneseDramas`,
   ];
 
   const fetchAllMedia = useCallback(async () => {

@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import config from '../config';
 
 function Cards({ item, collection }) {
   const [showTooltip, setShowTooltip] = useState(false);
+
+  const getImageUrl = (path) => {
+    if (!path) return null;
+    if (path.startsWith('http')) return path;
+    return `${config.BASE_URL}${path}`;
+  };
   
   // Map collections to display types
    const collectionTypeMap = {
@@ -48,11 +55,7 @@ function Cards({ item, collection }) {
       >
         <div className="relative aspect-[2/3]">
           {item.thumbnail ? (
-            <img 
-              src={item.thumbnail} 
-              alt={item.title} 
-              className="w-full h-full object-cover rounded-lg"
-            />
+            <img src={getImageUrl(item.thumbnail)} />
           ) : (
             <div className="w-full h-full bg-gradient-to-br from-red-900/30 to-purple-900/30 rounded-lg flex items-center justify-center">
               <div className="text-5xl text-gray-500">🎬</div>

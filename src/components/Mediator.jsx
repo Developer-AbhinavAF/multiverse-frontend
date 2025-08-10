@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { BASE_URL } from './config';
-
+import config from '../config';``
 const Mediator = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -39,14 +38,14 @@ const Mediator = () => {
 
   // Fixed collection endpoints
   const endpoints = {
-    movies: "/api/movies",
-    animeMovie: "/api/animeMovie",
-    animeSeries: "/api/animeSeries",
-    webSeries: "/api/webSeries",
-    kDramas: "/api/kDramas",
-    cDramas: "/api/cDramas",
-    thaiDramas: "/api/thaiDramas",
-    japaneseDramas: "/api/japaneseDramas"
+    movies: `${config.BASE_URL}/api/movies`,
+    animeMovie: `${config.BASE_URL}/api/animeMovie`,
+    animeSeries: `${config.BASE_URL}/api/animeSeries`,
+    webSeries: `${config.BASE_URL}/api/webSeries`,
+    kDramas: `${config.BASE_URL}/api/kDramas`,
+    cDramas: `${config.BASE_URL}/api/cDramas`,
+    thaiDramas: `${config.BASE_URL}/api/thaiDramas`,
+    japaneseDramas: `${config.BASE_URL}/api/japaneseDrama`
   };
 
   const fetchMedia = useCallback(async () => {
