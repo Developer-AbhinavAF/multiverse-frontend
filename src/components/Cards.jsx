@@ -6,7 +6,7 @@ function Cards({ item, collection }) {
   const [showTooltip, setShowTooltip] = useState(false);
   
   // Map collections to display types
-  const collectionTypeMap = {
+   const collectionTypeMap = {
     movies: "Movie",
     animeMovie: "Anime Movie",
     animeSeries: "Anime Series",
@@ -15,6 +15,14 @@ function Cards({ item, collection }) {
     cDramas: "C-Drama",
     thaiDramas: "Thai Drama",
     japaneseDramas: "Japanese Drama"
+  };
+
+  // Fixed quality detection
+  const getQualities = () => {
+    if (!item.qualities) return [];
+    return Object.keys(item.qualities).filter(quality => 
+      item.qualities[quality] && item.qualities[quality].downloadUrl
+    );
   };
 
   // Map collections to colors
@@ -30,14 +38,6 @@ function Cards({ item, collection }) {
       japaneseDramas: "bg-violet-600"
     };
     return colorMap[collection] || "bg-gray-600";
-  };
-
-  // Get available qualities
-  const getQualities = () => {
-    if (!item.qualities) return [];
-    return Object.keys(item.qualities).filter(quality => 
-      item.qualities[quality] !== null
-    );
   };
 
   return (

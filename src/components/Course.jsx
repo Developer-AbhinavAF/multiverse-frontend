@@ -26,14 +26,14 @@ const Courses = () => {
 
   // Updated endpoints with drama collections
   const endpoints = [
-    "https://multiverse-backend.onrender.com/api/movies",
-    "https://multiverse-backend.onrender.com/api/animeMovie",
-    "https://multiverse-backend.onrender.com/api/animeSeries",
-    "https://multiverse-backend.onrender.com/api/webSeries",
-    "https://multiverse-backend.onrender.com/api/kDramas",
-    "https://multiverse-backend.onrender.com/api/cDramas",
-    "https://multiverse-backend.onrender.com/api/thaiDramas",
-    "https://multiverse-backend.onrender.com/api/japaneseDramas",
+    "/api/movies",
+    "/api/animeMovie",
+    "/api/animeSeries",
+    "/api/webSeries",
+    "/api/kDramas",
+    "/api/cDramas",
+    "/api/thaiDramas",
+    "/api/japaneseDramas",
   ];
 
   const fetchAllMedia = useCallback(async () => {
@@ -42,8 +42,8 @@ const Courses = () => {
       setError(null);
 
       const responses = await Promise.allSettled(
-        endpoints.map((endpoint) =>
-          axios.get(endpoint, {
+        endpoints.map(endpoint => 
+          axios.get(`${BASE_URL}${endpoint}`, { // Use BASE_URL from config
             params: { search: submittedSearch, page: 1, limit: 100 },
             timeout: 10000,
           })

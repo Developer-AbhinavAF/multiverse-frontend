@@ -38,14 +38,14 @@ const Mediator = () => {
 
   // Fixed collection endpoints
   const endpoints = {
-    movies: "https://multiverse-backend.onrender.com/api/movies",
-    animeMovie: "https://multiverse-backend.onrender.com/api/animeMovie",
-    animeSeries: "https://multiverse-backend.onrender.com/api/animeSeries",
-    webSeries: "https://multiverse-backend.onrender.com/api/webSeries",
-    kDramas: "https://multiverse-backend.onrender.com/api/kDramas",
-    cDramas: "https://multiverse-backend.onrender.com/api/cDramas",
-    thaiDramas: "https://multiverse-backend.onrender.com/api/thaiDramas",
-    japaneseDramas: "https://multiverse-backend.onrender.com/api/japaneseDramas"
+    movies: "/api/movies",
+    animeMovie: "/api/animeMovie",
+    animeSeries: "/api/animeSeries",
+    webSeries: "/api/webSeries",
+    kDramas: "/api/kDramas",
+    cDramas: "/api/cDramas",
+    thaiDramas: "/api/thaiDramas",
+    japaneseDramas: "/api/japaneseDramas"
   };
 
   const fetchMedia = useCallback(async () => {
@@ -53,7 +53,7 @@ const Mediator = () => {
       setLoading(true);
       setError(null);
       
-      const endpoint = endpoints[collection];
+      const endpoint = `https://multiverse-backend.onrender.com/api${endpoints[collection]}`; // Use BASE_URL
       if (!endpoint) {
         setError("Invalid collection type");
         return;
