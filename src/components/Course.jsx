@@ -30,21 +30,27 @@ const Courses = () => {
     "https://multiverse-backend.onrender.com/api/animeMovie",
     "https://multiverse-backend.onrender.com/api/animeSeries",
     "https://multiverse-backend.onrender.com/api/webSeries",
-    "https://multiverse-backend.onrender.com/api/kDramas",       // Plural
-    "https://multiverse-backend.onrender.com/api/cDramas",       // Plural
-    "https://multiverse-backend.onrender.com/api/thaiDramas",    // Plural
-    "https://multiverse-backend.onrender.com/api/japaneseDramas" // Plural
+    "https://multiverse-backend.onrender.com/api/kDramas",
+    "https://multiverse-backend.onrender.com/api/cDramas",
+    "https://multiverse-backend.onrender.com/api/thaiDramas",
+    "https://multiverse-backend.onrender.com/api/japaneseDramas",
   ];
+
   const fetchAllMedia = useCallback(async () => {
     try {
+      setLoading(true);
+      setError(null);
+
       const responses = await Promise.allSettled(
         endpoints.map((endpoint) =>
           axios.get(endpoint, {
             params: { search: submittedSearch, page: 1, limit: 100 },
+            timeout: 10000,
           })
         )
       );
 
+      // Log errors for debugging
       responses.forEach((response, index) => {
         if (response.status === "rejected") {
           console.error(
@@ -54,9 +60,17 @@ const Courses = () => {
         }
       });
 
-      // ... rest of your code ...
+      const allResults = responses.flatMap((response) =>
+        response.status === "fulfilled" ? response.value.data.results || [] : []
+      );
+
+      setMedia(allResults);
+      setTotalPages(Math.ceil(allResults.length / limit));
     } catch (err) {
-      console.error("Global fetch error:", err);
+      console.error("Fetch error:", err);
+      setError("Failed to fetch media. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   }, [submittedSearch]);
 
