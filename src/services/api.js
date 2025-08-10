@@ -1,12 +1,7 @@
 import axios from 'axios';
 
-export async function fetchMovies(params) {
-  const res = await fetch(`https://multiverse-backend.onrender.com/api/movies?${params}`);
-  return res.json();
-}
-
 const API = axios.create({
-  baseURL: process('https://multiverse-backend.onrender.com/api'),
+  baseURL: process.env.REACT_APP_API_URL || 'https://multiverse-backend.onrender.com/api',
   timeout: 10000,
 });
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { BASE_URL } from './config';
 
 const Mediator = () => {
   const { slug } = useParams();
@@ -53,7 +54,7 @@ const Mediator = () => {
       setLoading(true);
       setError(null);
       
-      const endpoint = `https://multiverse-backend.onrender.com/api${endpoints[collection]}`; // Use BASE_URL
+      const endpoint = `${BASE_URL}${endpoints[collection]}`; // Use BASE_URL
       if (!endpoint) {
         setError("Invalid collection type");
         return;

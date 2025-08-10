@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cards from "./Cards";
 import { mediaAPI } from "../services/api";
+import { BASE_URL } from './config';
 
 const Courses = () => {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ const Courses = () => {
 
       const responses = await Promise.allSettled(
         endpoints.map(endpoint => 
-          axios.get(`https://multiverse-backend.onrender.com/api${endpoint}`, { // Use BASE_URL from config
+          axios.get(`${BASE_URL}${endpoint}`, { // Use BASE_URL from config
             params: { search: submittedSearch, page: 1, limit: 100 },
             timeout: 10000,
           })
