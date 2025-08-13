@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://multiverse-backend.onrender.com/api',
-  timeout: 10000,
+  baseURL: 'https://multiverse-backend.onrender.com/api',
+  timeout: 1000000000,
 });
 
 // Request interceptor

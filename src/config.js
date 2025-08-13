@@ -1,5 +1,5 @@
-const config = {
-  BASE_URL: "https://multiverse-backend.onrender.com"
-};
+// const config = {
+//   BASE_URL: process.env.REACT_APP_BASE_URL
+// };
 
-export default config;
+// export default config;

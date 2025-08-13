@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import config from '../config';
 
 // Update the API call:
 
@@ -16,7 +15,7 @@ const LatestUpdates = () => {
     const fetchUpdates = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${config.BASE_URL}/api/updates`);
+        const response = await axios.get(`https://multiverse-backend.onrender.com/api/updates`);
         setUpdates(response.data);
       } catch (err) {
         setError('Failed to fetch updates. Please try again later.');

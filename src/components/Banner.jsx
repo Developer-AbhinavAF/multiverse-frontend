@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useNavigate } from "react-router-dom";
-import config from "../config";
 
 const Hero = () => {
   const [search, setSearch] = useState("");
@@ -61,7 +60,7 @@ const Hero = () => {
     try {
       // Search all collections in parallel
       const requests = collections.map((collection) =>
-        axios.get(`${config.BASE_URL}/api/${collection}`, {
+        axios.get(`https://multiverse-backend.onrender.com/api/${collection}`, {
           params: { search, limit: 5 },
         })
       );

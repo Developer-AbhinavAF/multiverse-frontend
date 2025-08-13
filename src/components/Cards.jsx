@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import config from "../config";
 
 function Cards({ item, collection }) {
   const [showTooltip, setShowTooltip] = useState(false);
@@ -9,7 +8,7 @@ function Cards({ item, collection }) {
   const getImageUrl = (path) => {
     if (!path) return null;
     if (path.startsWith("http")) return path;
-    return `${config.BASE_URL}${path}`;
+    return `https://multiverse-backend.onrender.com${path}`;
   };
 
   // Map collections to display types

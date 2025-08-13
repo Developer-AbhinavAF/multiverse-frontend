@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
-import config from '../config';``
 const Mediator = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -38,14 +37,14 @@ const Mediator = () => {
 
   // Fixed collection endpoints
   const endpoints = {
-    movies: `${config.BASE_URL}/api/movies`,
-    animeMovie: `${config.BASE_URL}/api/animeMovie`,
-    animeSeries: `${config.BASE_URL}/api/animeSeries`,
-    webSeries: `${config.BASE_URL}/api/webSeries`,
-    kDramas: `${config.BASE_URL}/api/kDramas`,
-    cDramas: `${config.BASE_URL}/api/cDramas`,
-    thaiDramas: `${config.BASE_URL}/api/thaiDramas`,
-    japaneseDramas: `${config.BASE_URL}/api/japaneseDrama`
+    movies: `https://multiverse-backend.onrender.com/api/movies`,
+    animeMovie: `https://multiverse-backend.onrender.com/api/animeMovie`,
+    animeSeries: `https://multiverse-backend.onrender.com/api/animeSeries`,
+    webSeries: `https://multiverse-backend.onrender.com/api/webSeries`,
+    kDramas: `https://multiverse-backend.onrender.com/api/kDramas`,
+    cDramas: `https://multiverse-backend.onrender.com/api/cDramas`,
+    thaiDramas: `https://multiverse-backend.onrender.com/api/thaiDramas`,
+    japaneseDramas: `https://multiverse-backend.onrender.com/api/japaneseDrama`
   };
 
   const fetchMedia = useCallback(async () => {
@@ -53,7 +52,7 @@ const Mediator = () => {
       setLoading(true);
       setError(null);
       
-      const endpoint = `${BASE_URL}${endpoints[collection]}`; // Use BASE_URL
+      const endpoint = `https://multiverse-backend.onrender.com/api${endpoints[collection]}`; // Use BASE_URL
       if (!endpoint) {
         setError("Invalid collection type");
         return;

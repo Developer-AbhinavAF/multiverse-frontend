@@ -3,10 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Cards from "./Cards";
-import { mediaAPI } from "../services/api";
-import config from '../config';
-
-
 
 const Courses = () => {
   const navigate = useNavigate();
@@ -27,16 +23,19 @@ const Courses = () => {
   const searchInputRef = useRef(null);
   const limit = 20;
 
-  // Updated endpoints with drama collections
+  // Hardcoded Base URL
+  const BASE_URL = "https://multiverse-backend.onrender.com/api";
+
+  // Endpoints list
   const endpoints = [
-    `${config.BASE_URL}/api/movies`,
-    `${config.BASE_URL}/api/animeMovie`,
-    `${config.BASE_URL}/api/animeSeries`,
-    `${config.BASE_URL}/api/webSeries`,
-    `${config.BASE_URL}/api/kDramas`,
-    `${config.BASE_URL}/api/cDramas`,
-    `${config.BASE_URL}/api/thaiDramas`,
-    `${config.BASE_URL}/api/japaneseDramas`,
+    `${BASE_URL}/movies`,
+    `${BASE_URL}/animeMovie`,
+    `${BASE_URL}/animeSeries`,
+    `${BASE_URL}/webSeries`,
+    `${BASE_URL}/kDramas`,
+    `${BASE_URL}/cDramas`,
+    `${BASE_URL}/thaiDramas`,
+    `${BASE_URL}/japaneseDramas`,
   ];
 
   const fetchAllMedia = useCallback(async () => {
@@ -45,26 +44,22 @@ const Courses = () => {
       setError(null);
 
       const responses = await Promise.allSettled(
-        endpoints.map(endpoint => 
-          axios.get(`${BASE_URL}${endpoint}`, { // Use BASE_URL from config
+        endpoints.map((url) =>
+          axios.get(url, {
             params: { search: submittedSearch, page: 1, limit: 100 },
-            timeout: 10000,
+            timeout: 20000, // 20s timeout for Render cold start
           })
         )
       );
 
-      // Log errors for debugging
-      responses.forEach((response, index) => {
-        if (response.status === "rejected") {
-          console.error(
-            `Error fetching ${endpoints[index]}:`,
-            response.reason.message
-          );
+      responses.forEach((res, index) => {
+        if (res.status === "rejected") {
+          console.error(`Error fetching ${endpoints[index]}:`, res.reason?.message);
         }
       });
 
-      const allResults = responses.flatMap((response) =>
-        response.status === "fulfilled" ? response.value.data.results || [] : []
+      const allResults = responses.flatMap((res) =>
+        res.status === "fulfilled" ? res.value.data.results || [] : []
       );
 
       setMedia(allResults);
@@ -81,7 +76,6 @@ const Courses = () => {
     fetchAllMedia();
   }, [fetchAllMedia]);
 
-  // Reset page to 1 when filters change
   useEffect(() => {
     setPage(1);
     setPageBlock(0);
@@ -99,9 +93,7 @@ const Courses = () => {
     navigate(`/media/${item.slug}?collection=${item.type}`);
   };
 
-  // Apply filters and sorting
   const filteredMedia = [...media]
-    // Filter by category
     .filter((item) => {
       if (activeFilter === "all") return true;
       if (activeFilter === "movie")
@@ -112,20 +104,16 @@ const Courses = () => {
       if (activeFilter === "drama") return item.type.includes("Drama");
       return true;
     })
-    // Filter by quality
     .filter((item) => {
       if (qualityFilter === "all") return true;
       return item.qualities && item.qualities[qualityFilter];
     })
-    // Filter by rating
     .filter((item) => item.rating >= ratingFilter)
-    // Filter by year
     .filter((item) => {
       if (!yearFilter) return true;
       const year = new Date(item.releaseDate).getFullYear();
       return year === parseInt(yearFilter);
     })
-    // Sorting
     .sort((a, b) => {
       if (sortOption === "newest") {
         return new Date(b.releaseDate) - new Date(a.releaseDate);
@@ -163,7 +151,6 @@ const Courses = () => {
     { id: "title", label: "Title (A-Z)" },
   ];
 
-  // Get unique years
   const years = [
     ...new Set(
       media
@@ -172,7 +159,6 @@ const Courses = () => {
     ),
   ].sort((a, b) => b - a);
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -197,7 +183,6 @@ const Courses = () => {
     },
   };
 
-  // Pagination
   const pagesPerBlock = 5;
   const startPage = pageBlock * pagesPerBlock + 1;
   const endPage = Math.min(startPage + pagesPerBlock - 1, totalPages);
@@ -223,7 +208,6 @@ const Courses = () => {
     }
   };
 
-  // Skeleton Loading
   const SkeletonCard = () => (
     <motion.div variants={itemVariants} className="flex flex-col h-full w-full">
       <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-900 to-pink-800 h-80">
@@ -266,10 +250,8 @@ const Courses = () => {
       `}</style>
 
       <div className="max-w-7xl mx-auto">
-        <form
-          onSubmit={handleSearchSubmit}
-          className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8"
-        >
+        {/* Search */}
+        <form onSubmit={handleSearchSubmit} className="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
           <div className="relative w-full md:w-1/2">
             <motion.input
               ref={searchInputRef}
@@ -280,81 +262,30 @@ const Courses = () => {
               onFocus={() => setIsSearchFocused(true)}
               onBlur={() => setIsSearchFocused(false)}
               className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-indigo-500/30 text-white backdrop-blur-sm"
-              animate={{
-                borderColor: isSearchFocused
-                  ? "rgba(99, 102, 241, 0.7)"
-                  : "rgba(99, 102, 241, 0.3)",
-                boxShadow: isSearchFocused
-                  ? "0 0 0 3px rgba(99, 102, 241, 0.3)"
-                  : "0 4px 20px rgba(0, 0, 0, 0.2)",
-              }}
-              transition={{ duration: 0.3 }}
             />
             <div className="absolute right-3 top-3 text-purple-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
+              🔍
             </div>
           </div>
-
           <motion.button
             type="submit"
-            className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
             Search
           </motion.button>
         </form>
 
-        {/* Advanced Filters */}
+        {/* Filters */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-gradient-to-br from-purple-900/50 to-pink-900/50 p-4 rounded-xl border border-purple-500/30">
           {/* Category Filter */}
           <div>
-            <label className="block text-sm font-medium text-cyan-200 mb-2">
-              Category
-            </label>
+            <label className="block text-sm font-medium text-cyan-200 mb-2">Category</label>
             <div className="flex flex-wrap gap-2">
               {filters.map((filter) => (
                 <motion.button
                   key={filter.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => {
-                    setActiveFilter(filter.id);
-                    setPage(1);
-                    setPageBlock(0);
-                  }}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium ${
-                    activeFilter === filter.id
-                      ? "bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
-                      : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200 hover:from-purple-800/70 hover:to-pink-800/70"
-                  }`}
+                  onClick={() => { setActiveFilter(filter.id); setPage(1); setPageBlock(0); }}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium ${activeFilter === filter.id ? "bg-gradient-to-r from-teal-500 to-emerald-600 text-white" : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200"}`}
                 >
                   {filter.label}
                 </motion.button>
@@ -364,21 +295,13 @@ const Courses = () => {
 
           {/* Quality Filter */}
           <div>
-            <label className="block text-sm font-medium text-cyan-200 mb-2">
-              Quality
-            </label>
+            <label className="block text-sm font-medium text-cyan-200 mb-2">Quality</label>
             <div className="flex flex-wrap gap-2">
               {qualityOptions.map((quality) => (
                 <motion.button
                   key={quality.id}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   onClick={() => setQualityFilter(quality.id)}
-                  className={`px-3 py-1 rounded-lg text-xs font-medium ${
-                    qualityFilter === quality.id
-                      ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white"
-                      : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200 hover:from-purple-800/70 hover:to-pink-800/70"
-                  }`}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium ${qualityFilter === quality.id ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white" : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200"}`}
                 >
                   {quality.label}
                 </motion.button>
@@ -388,9 +311,7 @@ const Courses = () => {
 
           {/* Rating Filter */}
           <div>
-            <label className="block text-sm font-medium text-cyan-200 mb-2">
-              Minimum Rating
-            </label>
+            <label className="block text-sm font-medium text-cyan-200 mb-2">Minimum Rating</label>
             <div className="flex items-center gap-2">
               <input
                 type="range"
@@ -400,177 +321,75 @@ const Courses = () => {
                 onChange={(e) => setRatingFilter(e.target.value)}
                 className="w-full accent-amber-500"
               />
-              <div className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 px-3 py-1 rounded-lg text-sm text-amber-300">
-                {ratingFilter}⭐
-              </div>
+              <div className="px-3 py-1 rounded-lg text-sm text-amber-300">{ratingFilter}⭐</div>
             </div>
           </div>
 
           {/* Year Filter */}
           <div>
-            <label className="block text-sm font-medium text-cyan-200 mb-2">
-              Release Year
-            </label>
+            <label className="block text-sm font-medium text-cyan-200 mb-2">Release Year</label>
             <select
               value={yearFilter}
               onChange={(e) => setYearFilter(e.target.value)}
-              className="w-full bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-700 text-white py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-700 text-white py-2 px-3 rounded-lg"
             >
               <option value="">All Years</option>
               {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
+                <option key={year} value={year}>{year}</option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* Sort Options */}
+        {/* Sort */}
         <div className="flex justify-between items-center mb-8">
-          <div className="text-cyan-200 text-sm">
-            Showing {filteredMedia.length} items
-          </div>
+          <div className="text-cyan-200 text-sm">Showing {filteredMedia.length} items</div>
           <div className="flex items-center gap-2">
             <span className="text-cyan-200 text-sm">Sort by:</span>
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-700 text-white py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-700 text-white py-2 px-3 rounded-lg"
             >
               {sortOptions.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.label}
-                </option>
+                <option key={option.id} value={option.id}>{option.label}</option>
               ))}
             </select>
           </div>
         </div>
 
+        {/* Media Grid */}
         {loading ? (
-          <motion.div
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
-          >
-            {Array.from({ length: limit }).map((_, index) => (
-              <SkeletonCard key={index} />
-            ))}
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+            {Array.from({ length: limit }).map((_, i) => <SkeletonCard key={i} />)}
           </motion.div>
         ) : (
           <>
             {paginatedMedia.length === 0 ? (
-              <div className="text-center py-20">
-                <div className="inline-block p-6 bg-gradient-to-br from-indigo-900/30 to-purple-900/30 rounded-2xl backdrop-blur-lg border border-purple-500/30">
-                  <div className="text-amber-400 text-5xl mb-4">🎬</div>
-                  <h3 className="text-2xl font-bold text-teal-300 mb-2">
-                    No Media Found
-                  </h3>
-                  <p className="text-cyan-300 max-w-md mx-auto">
-                    Try adjusting your search or filters.
-                  </p>
-                </div>
-              </div>
+              <div className="text-center py-20 text-cyan-200">No Media Found</div>
             ) : (
               <>
-                <motion.div
-                  variants={containerVariants}
-                  initial="hidden"
-                  animate="visible"
-                  className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
-                >
+                <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
                   <AnimatePresence>
                     {paginatedMedia.map((item) => (
-                      <motion.div
-                        key={item._id}
-                        variants={itemVariants}
-                        whileHover="hover"
-                        className="flex flex-col h-full w-full cursor-pointer group"
-                        onClick={() => handleCardClick(item)}
-                      >
+                      <motion.div key={item._id} variants={itemVariants} whileHover="hover" className="flex flex-col h-full w-full cursor-pointer" onClick={() => handleCardClick(item)}>
                         <Cards item={item} collection={item.type} />
                       </motion.div>
                     ))}
                   </AnimatePresence>
                 </motion.div>
 
+                {/* Pagination */}
                 {totalPages > 1 && (
-                  <motion.div
-                    className="mt-10 flex justify-center"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    <div className="flex items-center space-x-2 bg-gradient-to-r from-purple-900/50 to-pink-900/50 backdrop-blur-sm p-2 rounded-xl border border-purple-500/30">
-                      {pageBlock > 0 && (
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={goToPrevBlock}
-                          className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-800/50 to-purple-800/50 hover:from-indigo-700 hover:to-purple-700 text-white flex items-center"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 mr-1"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 19l-7-7m0 0l7-7m-7 7h18"
-                            />
-                          </svg>
-                          Prev
-                        </motion.button>
-                      )}
-
-                      {Array.from(
-                        { length: endPage - startPage + 1 },
-                        (_, i) => startPage + i
-                      ).map((pageNum) => (
-                        <motion.button
-                          key={pageNum}
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => handlePageChange(pageNum)}
-                          className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${
-                            page === pageNum
-                              ? "bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/30"
-                              : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200 hover:bg-amber-500/30"
-                          }`}
-                        >
+                  <motion.div className="mt-10 flex justify-center">
+                    <div className="flex items-center space-x-2 p-2 rounded-xl border border-purple-500/30">
+                      {pageBlock > 0 && <button onClick={goToPrevBlock} className="px-4 py-2 rounded-lg bg-purple-800 text-white">Prev</button>}
+                      {Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i).map((pageNum) => (
+                        <button key={pageNum} onClick={() => handlePageChange(pageNum)} className={`w-10 h-10 rounded-lg ${page === pageNum ? "bg-amber-500 text-white" : "bg-purple-900 text-cyan-200"}`}>
                           {pageNum}
-                        </motion.button>
+                        </button>
                       ))}
-
-                      {(pageBlock + 1) * pagesPerBlock < totalPages && (
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={goToNextBlock}
-                          className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-800/50 to-purple-800/50 hover:from-indigo-700 hover:to-purple-700 text-white flex items-center"
-                        >
-                          Next
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 ml-1"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </motion.button>
-                      )}
+                      {(pageBlock + 1) * pagesPerBlock < totalPages && <button onClick={goToNextBlock} className="px-4 py-2 rounded-lg bg-purple-800 text-white">Next</button>}
                     </div>
                   </motion.div>
                 )}
