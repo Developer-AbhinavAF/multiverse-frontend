@@ -26,15 +26,9 @@ const Courses = () => {
   // Updated endpoints with Render.com URL
   const endpoints = [
     "https://multiverse-backend.onrender.com/api/movies",
-    "https://multiverse-backend.onrender.com/api/pcGames",
-    "https://multiverse-backend.onrender.com/api/androidGames",
-    "https://multiverse-backend.onrender.com/api/iosGames",
     "https://multiverse-backend.onrender.com/api/animeMovie",
     "https://multiverse-backend.onrender.com/api/animeSeries",
     "https://multiverse-backend.onrender.com/api/webSeries",
-    "https://multiverse-backend.onrender.com/api/pcApps",
-    "https://multiverse-backend.onrender.com/api/androidApps",
-    "https://multiverse-backend.onrender.com/api/modApks",
     "https://multiverse-backend.onrender.com/api/kDramas",
     "https://multiverse-backend.onrender.com/api/cDramas",
     "https://multiverse-backend.onrender.com/api/thaiDramas",
