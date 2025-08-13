@@ -34,7 +34,12 @@ const Courses = () => {
     "https://multiverse-backend.onrender.com/api/webSeries",
     "https://multiverse-backend.onrender.com/api/pcApps",
     "https://multiverse-backend.onrender.com/api/androidApps",
-    "https://multiverse-backend.onrender.com/api/modApks"
+    "https://multiverse-backend.onrender.com/api/modApks",
+    "https://multiverse-backend.onrender.com/api/kDramas",
+    "https://multiverse-backend.onrender.com/api/cDramas",
+    "https://multiverse-backend.onrender.com/api/thaiDramas",
+    "https://multiverse-backend.onrender.com/api/japaneseDramas",
+    "https://multiverse-backend.onrender.com/api/pakistaniDramas",
   ];
 
   const fetchAllMedia = useCallback(async () => {
@@ -95,7 +100,19 @@ const Courses = () => {
     // Filter by category
     .filter(item => {
       if (activeFilter === "all") return true;
-      if (activeFilter === "movie") return item.type === "movie" || item.type === "animeMovie";
+      if (activeFilter === "movie") {
+        const movieLike = [
+          "movie",
+          "animeMovie",
+          "kDramas",
+          "cDramas",
+          "thaiDramas",
+          "japaneseDramas",
+          "pakistaniDramas",
+        ];
+        return movieLike.includes(item.type);
+      }
+
       if (activeFilter === "game") return item.type.includes("Game");
       if (activeFilter === "anime") return item.type.includes("anime");
       if (activeFilter === "series") return item.type === "webSeries" || item.type === "animeSeries";

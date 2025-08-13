@@ -47,7 +47,12 @@ const Mediator = () => {
     webSeries: "https://multiverse-backend.onrender.com/api/webSeries",
     pcApps: "https://multiverse-backend.onrender.com/api/pcApps",
     androidApps: "https://multiverse-backend.onrender.com/api/androidApps",
-    modApks: "https://multiverse-backend.onrender.com/api/modApks"
+    modApks: "https://multiverse-backend.onrender.com/api/modApks",
+    kDramas: "https://multiverse-backend.onrender.com/api/kDramas",
+    cDramas: "https://multiverse-backend.onrender.com/api/cDramas",
+    thaiDramas: "https://multiverse-backend.onrender.com/api/thaiDramas",
+    japaneseDramas: "https://multiverse-backend.onrender.com/api/japaneseDramas",
+    pakistaniDramas: "https://multiverse-backend.onrender.com/api/pakistaniDramas",
   };
 
   const fetchMedia = useCallback(async () => {
@@ -79,7 +84,7 @@ const Mediator = () => {
             }
           } 
           // Movie download options
-          else if (['movies', 'animeMovie'].includes(collection)) {
+          else if (['movies', 'animeMovie', 'kDramas', 'cDramas', 'thaiDramas', 'japaneseDramas', 'pakistaniDramas'].includes(collection)) {
             if (response.data.qualities) {
               Object.entries(response.data.qualities).forEach(([quality, details]) => {
                 if (details && details.downloadUrl) {

@@ -30,7 +30,12 @@ const Stream = () => {
     webSeries: "https://multiverse-backend.onrender.com/api/webSeries",
     pcApps: "https://multiverse-backend.onrender.com/api/pcApps",
     androidApps: "https://multiverse-backend.onrender.com/api/androidApps",
-    modApks: "https://multiverse-backend.onrender.com/api/modApks"
+    modApks: "https://multiverse-backend.onrender.com/api/modApks",
+    kDramas: "https://multiverse-backend.onrender.com/api/kDramas",
+    cDramas: "https://multiverse-backend.onrender.com/api/cDramas",
+    thaiDramas: "https://multiverse-backend.onrender.com/api/thaiDramas",
+    japaneseDramas: "https://multiverse-backend.onrender.com/api/japaneseDramas",
+    pakistaniDramas: "https://multiverse-backend.onrender.com/api/pakistaniDramas",
   };
 
   const fetchMedia = async () => {
