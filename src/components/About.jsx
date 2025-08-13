@@ -1,45 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaTwitter, FaGithub, FaLinkedin, FaHeart, FaStar, FaDownload } from 'react-icons/fa';
+import { FaReact, FaNodeJs, FaPython, FaJava, FaDocker, FaAws, FaDatabase, FaFigma, FaGitAlt, FaDownload, FaHeart, FaStar, FaGithub } from 'react-icons/fa';
+import { SiJavascript, SiTypescript, SiMongodb, SiFirebase, SiRedux, SiNextdotjs, SiTailwindcss } from 'react-icons/si';
 
 const AboutUs = () => {
   const [activeSkill, setActiveSkill] = useState(null);
   const [activeTab, setActiveTab] = useState('about');
   const [review, setReview] = useState({ name: '', email: '', rating: 5, comment: '' });
-  const [request, setRequest] = useState({ name: '', email: '', type: 'content', message: '' });
+  const [request, setRequest] = useState({ name: '', email: '', type: 'movie', message: '' });
   const [isLiked, setIsLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(127);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState(null);
   
+  // Skill data with icons and colors
+  const skills = [
+    { id: 1, name: "React", icon: <FaReact />, color: "from-cyan-400 to-blue-600" },
+    { id: 2, name: "JavaScript", icon: <SiJavascript />, color: "from-yellow-400 to-amber-600" },
+    { id: 3, name: "TypeScript", icon: <SiTypescript />, color: "from-blue-500 to-indigo-700" },
+    { id: 4, name: "Node.js", icon: <FaNodeJs />, color: "from-green-500 to-emerald-700" },
+    { id: 5, name: "Python", icon: <FaPython />, color: "from-blue-400 to-sky-600" },
+    { id: 6, name: "Java", icon: <FaJava />, color: "from-red-500 to-orange-600" },
+    { id: 7, name: "MongoDB", icon: <SiMongodb />, color: "from-green-400 to-lime-600" },
+    { id: 8, name: "Firebase", icon: <SiFirebase />, color: "from-amber-500 to-yellow-600" },
+    { id: 9, name: "Docker", icon: <FaDocker />, color: "from-blue-400 to-cyan-600" },
+    { id: 10, name: "AWS", icon: <FaAws />, color: "from-orange-500 to-amber-600" },
+    { id: 11, name: "SQL", icon: <FaDatabase />, color: "from-blue-300 to-indigo-500" },
+    { id: 12, name: "Redux", icon: <SiRedux />, color: "from-purple-500 to-violet-700" },
+    { id: 13, name: "Next.js", icon: <SiNextdotjs />, color: "from-gray-700 to-black" },
+    { id: 14, name: "Tailwind CSS", icon: <SiTailwindcss />, color: "from-teal-400 to-cyan-600" },
+    { id: 15, name: "Figma", icon: <FaFigma />, color: "from-purple-400 to-fuchsia-600" },
+    { id: 16, name: "Git", icon: <FaGitAlt />, color: "from-orange-600 to-red-700" },
+    { id: 17, name: "Github", icon: <FaGithub />, color: "from-gray-600 to-white-700" },
+  ];
+
   // Team members data
   const teamMembers = [
     {
       id: 1,
       name: "Abhinav",
-      role: "Founder & Full-stack Developer",
-      bio: "10+ years experience in building scalable web applications",
+      role: "Founder & CEO",
+      bio: "Tech visionary with 10+ years in software development. Passionate about creating solutions that make a difference.",
       color: "from-blue-400 to-indigo-600"
     },
     {
       id: 2,
-      name: "Abhinav",
-      role: "UI/UX Designer",
-      bio: "Specializes in creating intuitive user interfaces",
+      name: "Rahul",
+      role: "Lead Designer",
+      bio: "Creative designer specializing in UI/UX with a focus on user-centered design principles.",
       color: "from-pink-500 to-rose-600"
     },
     {
       id: 3,
-      name: "Abhinav",
-      role: "Backend Developer",
-      bio: "Database architecture and API design expert",
+      name: "Vikram",
+      role: "CTO",
+      bio: "Full-stack developer and systems architect with expertise in scalable cloud solutions.",
       color: "from-green-500 to-emerald-600"
     },
     {
       id: 4,
-      name: "Abhinav",
-      role: "Content Manager",
-      bio: "Curates and manages our media library",
+      name: "Priya",
+      role: "Marketing Director",
+      bio: "Digital marketing expert with a track record of building engaged communities around tech products.",
       color: "from-yellow-400 to-amber-600"
     }
   ];
@@ -105,7 +127,7 @@ const AboutUs = () => {
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitStatus({ type: 'success', message: 'Request submitted successfully!' });
-      setRequest({ name: '', email: '', type: 'content', message: '' });
+      setRequest({ name: '', email: '', type: 'movie', message: '' });
       
       // Clear status after 3 seconds
       setTimeout(() => setSubmitStatus(null), 3000);
@@ -178,7 +200,7 @@ const AboutUs = () => {
           transition={{ duration: 0.8 }}
         >
           <div className="bg-gradient-to-r from-indigo-800/50 to-purple-800/50 backdrop-blur-lg rounded-full p-1 flex">
-            {['about', 'team', 'contact'].map((tab) => (
+            {['about', 'team', 'skills', 'contact'].map((tab) => (
               <button
                 key={tab}
                 className={`px-4 sm:px-6 py-2 sm:py-3 rounded-full text-sm font-medium transition-all ${
@@ -348,6 +370,83 @@ const AboutUs = () => {
           </motion.div>
         )}
 
+        {/* Skills Section */}
+        {activeTab === 'skills' && (
+          <motion.div 
+            className="my-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.7 }}
+          >
+            <div className="text-center mb-12">
+              <h2 className="text-2xl md:text-3xl font-bold mb-4 text-cyan-300">Our Expertise</h2>
+              <p className="text-lg sm:text-xl text-cyan-100 max-w-2xl mx-auto">
+                Technologies we use to build amazing experiences
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-8 gap-4">
+              {skills.map((skill) => (
+                <motion.div
+                  key={skill.id}
+                  className="flex flex-col items-center"
+                  variants={skillVariants}
+                  initial="initial"
+                  whileHover="hover"
+                  onHoverStart={() => setActiveSkill(skill.id)}
+                  onHoverEnd={() => setActiveSkill(null)}
+                >
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center bg-gradient-to-br ${skill.color} shadow-lg text-white`}>
+                    <motion.div
+                      animate={{ 
+                        scale: activeSkill === skill.id ? 1.2 : 1,
+                        rotate: activeSkill === skill.id ? [0, 15, -15, 0] : 0
+                      }}
+                      transition={{ duration: 0.4 }}
+                    >
+                      {skill.icon}
+                    </motion.div>
+                  </div>
+                  <motion.div 
+                    className="mt-2 text-center"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ 
+                      opacity: activeSkill === skill.id ? 1 : 0, 
+                      height: activeSkill === skill.id ? "auto" : 0 
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <span className="font-medium text-cyan-200 text-xs">{skill.name}</span>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </div>
+            
+            <div className="mt-12 bg-gradient-to-r from-cyan-700/30 to-blue-800/30 backdrop-blur-lg rounded-3xl p-6 border border-cyan-500/30">
+              <h3 className="text-xl md:text-2xl font-bold mb-6 text-cyan-300 text-center">Our Development Process</h3>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {[
+                  { title: "Research", desc: "Deep dive into user needs and market trends" },
+                  { title: "Design", desc: "Create intuitive and beautiful interfaces" },
+                  { title: "Development", desc: "Build robust and scalable solutions" },
+                ].map((step, index) => (
+                  <motion.div 
+                    key={index}
+                    className="bg-gradient-to-br from-indigo-800/30 to-purple-800/30 p-5 rounded-2xl border border-purple-500/30"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 * index }}
+                  >
+                    <div className="text-cyan-300 text-lg font-bold mb-2">{step.title}</div>
+                    <p className="text-cyan-100 text-sm">{step.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Contact Section */}
         {activeTab === 'contact' && (
           <motion.div 
@@ -443,10 +542,10 @@ const AboutUs = () => {
                 </form>
                 
                 {submitStatus && (
-                  <div className={`mt-4 p-3 rounded-lg ${
-                    submitStatus.type === 'success' ? 'bg-green-900/30 text-green-300' : 
-                    submitStatus.type === 'error' ? 'bg-red-900/30 text-red-300' : 
-                    'bg-amber-900/30 text-amber-300'
+                  <div className={`mt-4 p-3 rounded-lg text-center ${
+                    submitStatus.type === 'success' 
+                      ? 'bg-green-900/30 text-green-300' 
+                      : 'bg-red-900/30 text-red-300'
                   }`}>
                     {submitStatus.message}
                   </div>
@@ -459,7 +558,7 @@ const AboutUs = () => {
                 initial={{ x: 30, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
               >
-                <h3 className="text-xl md:text-2xl font-bold mb-6 text-cyan-300">Request Content or Feature</h3>
+                <h3 className="text-xl md:text-2xl font-bold mb-6 text-cyan-300">Request Content</h3>
                 
                 <form onSubmit={handleRequestSubmit}>
                   <div className="mb-4">
@@ -489,15 +588,19 @@ const AboutUs = () => {
                   </div>
                   
                   <div className="mb-4">
-                    <label className="block text-cyan-200 mb-2">Request Type</label>
+                    <label className="block text-cyan-200 mb-2">Content Type</label>
                     <select
                       name="type"
                       value={request.type}
                       onChange={(e) => setRequest({...request, type: e.target.value})}
                       className="w-full bg-pink-900/30 border border-pink-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
                     >
-                      <option value="content">Content Request</option>
-                      <option value="feature">Feature Request</option>
+                      <option value="movie">Movie</option>
+                      <option value="game">Game</option>
+                      <option value="series">TV Series</option>
+                      <option value="anime">Anime</option>
+                      <option value="app">Application</option>
+                      <option value="other">Other</option>
                     </select>
                   </div>
                   
@@ -508,7 +611,7 @@ const AboutUs = () => {
                       value={request.message}
                       onChange={(e) => setRequest({...request, message: e.target.value})}
                       className="w-full bg-pink-900/30 border border-pink-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
-                      placeholder="What would you like us to add or improve?"
+                      placeholder="What content would you like us to add?"
                       rows="4"
                       required
                     ></textarea>
@@ -525,33 +628,40 @@ const AboutUs = () => {
                   </motion.button>
                 </form>
                 
-                {/* Social Media Section */}
+                {/* Download Demo Section */}
                 <div className="mt-8 pt-6 border-t border-pink-700/30">
-                  <h4 className="text-lg font-bold mb-4 text-cyan-300">Connect With Us</h4>
-                  <div className="flex justify-center gap-6">
-                    <motion.a 
-                      href="https://twitter.com" 
-                      className="bg-gradient-to-r from-indigo-700/50 to-purple-700/50 p-3 rounded-full"
-                      whileHover={{ scale: 1.2, rotate: 15 }}
+                  <h4 className="text-lg font-bold mb-4 text-cyan-300">Download Demo</h4>
+                  <p className="text-cyan-100 mb-4">Try our sample download experience:</p>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    {['480p', '720p', '1080p', '4K'].map((quality, index) => (
+                      <motion.button
+                        key={index}
+                        className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-700/50 to-indigo-700/50 p-2 sm:p-3 rounded-lg border border-purple-500/30"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <FaDownload className="text-cyan-300 text-sm" />
+                        <span className="text-cyan-200 text-sm">{quality}</span>
+                      </motion.button>
+                    ))}
+                  </div>
+                  
+                  {/* Like Button */}
+                  <div className="mt-6 flex items-center justify-center">
+                    <motion.button
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full ${
+                        isLiked 
+                          ? "bg-gradient-to-r from-rose-500 to-pink-600 text-white" 
+                          : "bg-gradient-to-r from-purple-700/50 to-indigo-700/50 text-cyan-200"
+                      }`}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={handleLike}
                     >
-                      <FaTwitter className="h-6 w-6 text-white" />
-                    </motion.a>
-                    
-                    <motion.a 
-                      href="https://github.com" 
-                      className="bg-gradient-to-r from-indigo-700/50 to-purple-700/50 p-3 rounded-full"
-                      whileHover={{ scale: 1.2, rotate: 15 }}
-                    >
-                      <FaGithub className="h-6 w-6 text-white" />
-                    </motion.a>
-                    
-                    <motion.a 
-                      href="https://linkedin.com" 
-                      className="bg-gradient-to-r from-indigo-700/50 to-purple-700/50 p-3 rounded-full"
-                      whileHover={{ scale: 1.2, rotate: 15 }}
-                    >
-                      <FaLinkedin className="h-6 w-6 text-white" />
-                    </motion.a>
+                      <FaHeart className={isLiked ? "text-red-400" : "text-gray-400"} />
+                      <span>{likeCount} Likes</span>
+                    </motion.button>
                   </div>
                 </div>
               </motion.div>

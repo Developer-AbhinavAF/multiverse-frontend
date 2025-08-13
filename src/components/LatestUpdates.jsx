@@ -9,8 +9,8 @@ const BASE_URL = "https://multiverse-backend.onrender.com/api";
 const sources = [
   { url: `${BASE_URL}/movies`, type: "movie" },
   { url: `${BASE_URL}/webseries`, type: "webSeries" }, // fixed endpoint name
-  { url: `${BASE_URL}/anime/movies`, type: "animeMovie" }, // fixed endpoint name
-  { url: `${BASE_URL}/anime/series`, type: "animeSeries" }, // fixed endpoint name
+  { url: `${BASE_URL}/animeMovie`, type: "animeMovie" }, // fixed endpoint name
+  { url: `${BASE_URL}/animeseries`, type: "animeSeries" }, // fixed endpoint name
 ];
 
 const LatestUpdates = () => {

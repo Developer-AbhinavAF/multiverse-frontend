@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
+
 const Mediator = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Mediator = () => {
   const [requestData, setRequestData] = useState({
     name: "",
     email: "",
-    requestType: "content",
+    requestType: "movie",
     message: ""
   });
   
@@ -37,14 +38,16 @@ const Mediator = () => {
 
   // Fixed collection endpoints
   const endpoints = {
-    movies: `https://multiverse-backend.onrender.com/api/movies`,
-    animeMovie: `https://multiverse-backend.onrender.com/api/animeMovie`,
-    animeSeries: `https://multiverse-backend.onrender.com/api/animeSeries`,
-    webSeries: `https://multiverse-backend.onrender.com/api/webSeries`,
-    kDramas: `https://multiverse-backend.onrender.com/api/kDramas`,
-    cDramas: `https://multiverse-backend.onrender.com/api/cDramas`,
-    thaiDramas: `https://multiverse-backend.onrender.com/api/thaiDramas`,
-    japaneseDramas: `https://multiverse-backend.onrender.com/api/japaneseDrama`
+    movies: "https://multiverse-backend.onrender.com/api/movies",
+    pcGames: "https://multiverse-backend.onrender.com/api/pcGames",
+    androidGames: "https://multiverse-backend.onrender.com/api/androidGame",
+    iosGames: "https://multiverse-backend.onrender.com/api/iosGames",
+    animeMovie: "https://multiverse-backend.onrender.com/api/animeMovie",
+    animeSeries: "https://multiverse-backend.onrender.com/api/animeSeries",
+    webSeries: "https://multiverse-backend.onrender.com/api/webSeries",
+    pcApps: "https://multiverse-backend.onrender.com/api/pcApps",
+    androidApps: "https://multiverse-backend.onrender.com/api/androidApps",
+    modApks: "https://multiverse-backend.onrender.com/api/modApks"
   };
 
   const fetchMedia = useCallback(async () => {
@@ -52,7 +55,7 @@ const Mediator = () => {
       setLoading(true);
       setError(null);
       
-      const endpoint = `https://multiverse-backend.onrender.com/api${endpoints[collection]}`; // Use BASE_URL
+      const endpoint = endpoints[collection];
       if (!endpoint) {
         setError("Invalid collection type");
         return;
@@ -64,8 +67,19 @@ const Mediator = () => {
           setMedia({...response.data, collection});
           
           let options = [];
+          // Game download options
+          if (['pcGames', 'androidGames', 'iosGames', 'pcApps', 'androidApps', 'modApks'].includes(collection)) {
+            if (response.data.downloadLinks) {
+              Object.entries(response.data.downloadLinks).forEach(([provider, link]) => {
+                options.push({ quality: provider, link });
+              });
+            }
+            if (response.data.torrent) {
+              options.push({ quality: "Torrent", link: response.data.torrent });
+            }
+          } 
           // Movie download options
-          if (['movies', 'animeMovie'].includes(collection)) {
+          else if (['movies', 'animeMovie'].includes(collection)) {
             if (response.data.qualities) {
               Object.entries(response.data.qualities).forEach(([quality, details]) => {
                 if (details && details.downloadUrl) {
@@ -79,7 +93,7 @@ const Mediator = () => {
             }
           }
           // Series download options
-          else if (['animeSeries', 'webSeries', 'kDramas', 'cDramas', 'thaiDramas', 'japaneseDramas'].includes(collection)) {
+          else if (['animeSeries', 'webSeries'].includes(collection)) {
             response.data.seasons?.forEach(season => {
               season.episodes?.forEach(episode => {
                 if (episode.downloadQualities) {
@@ -224,13 +238,13 @@ const Mediator = () => {
     try {
       setSubmitStatus({ type: 'loading', message: 'Submitting request...' });
       
-      await axios.post(`https://multiverse-backend.onrender.com/api/requests`, requestData);
+      await axios.post(`https://multiverse-backend.onrender.com/api/${collection}/request`, requestData);
       
       setSubmitStatus({ type: 'success', message: 'Request submitted successfully!' });
       setRequestData({
         name: "",
         email: "",
-        requestType: "content",
+        requestType: "movie",
         message: ""
       });
       
@@ -280,8 +294,8 @@ const Mediator = () => {
   }
 
   const isDownloadable = downloadOptions.length > 0 || 
-    (['animeSeries', 'webSeries', 'kDramas', 'cDramas', 'thaiDramas', 'japaneseDramas'].includes(media.type) && media.downloadable);
-  const isDrama = media.type.includes("Drama");
+    (['animeSeries', 'webSeries'].includes(media.type) && media.downloadable);
+  const isSeries = media.type === 'animeSeries' || media.type === 'webSeries';
   const selectedDownload = downloadOptions.find(opt => opt.quality === selectedQuality);
 
   return (
@@ -390,8 +404,8 @@ const Mediator = () => {
                 </motion.a>
               )}
 
-              {/* STREAMING BUTTON */}
-              {(['movies', 'animeMovie', 'animeSeries', 'webSeries', 'kDramas', 'cDramas', 'thaiDramas', 'japaneseDramas'].includes(collection)) && (
+              {/* STREAMING BUTTON FOR ALL MEDIA TYPES */}
+              {(['movies', 'animeMovie', 'animeSeries', 'webSeries'].includes(collection)) && (
                 <motion.button
                   whileTap={{ scale: 0.95 }}
                   onClick={() => navigate(`/stream/${media.slug}?collection=${collection}`)}
@@ -454,7 +468,7 @@ const Mediator = () => {
                 : "text-indigo-300 hover:text-white"
             }`}
           >
-            Request/Suggest
+            Request Content
           </motion.button>
         </div>
         <style>{`
@@ -493,7 +507,7 @@ const Mediator = () => {
                     <h3 className="text-indigo-300 text-sm uppercase mb-1">Size</h3>
                     <p className="text-white">{media.fileSize || media.gameSize || "N/A"}</p>
                   </div>
-                  {isDrama && (
+                  {['animeSeries', 'webSeries'].includes(media.type) && (
                     <div>
                       <h3 className="text-indigo-300 text-sm uppercase mb-1">Downloadable</h3>
                       <p className="text-white">{media.downloadable ? "Yes" : "No"}</p>
@@ -515,8 +529,8 @@ const Mediator = () => {
             <div className="bg-gradient-to-br from-indigo-900/30 to-purple-900/30 backdrop-blur-sm p-5 rounded-2xl">
               <h2 className="text-xl font-bold mb-4 text-cyan-300">Download Options</h2>
               
-              {/* Movie downloads */}
-              {!isDrama && (
+              {/* Movie/Game downloads */}
+              {media.type !== 'animeSeries' && media.type !== 'webSeries' && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {downloadOptions.map((option) => (
                     <div 
@@ -554,8 +568,8 @@ const Mediator = () => {
                 </div>
               )}
               
-              {/* Drama episode downloads */}
-              {isDrama && (
+              {/* Series episode downloads */}
+              {(media.type === 'animeSeries' || media.type === 'webSeries') && (
                 <div className="space-y-6">
                   {media.seasons?.map((season, seasonIndex) => (
                     <div key={seasonIndex} className="bg-gradient-to-br from-indigo-900/20 to-purple-900/20 p-4 rounded-xl">
@@ -719,9 +733,9 @@ const Mediator = () => {
           
           {activeTab === "request" && (
             <div className="bg-gradient-to-br from-indigo-900/30 to-purple-900/30 backdrop-blur-sm p-5 rounded-2xl">
-              <h2 className="text-xl font-bold mb-4 text-cyan-300">Request or Suggest</h2>
+              <h2 className="text-xl font-bold mb-4 text-cyan-300">Request Content</h2>
               <p className="text-cyan-200 mb-6">
-                Can't find what you're looking for? Request it here! Have an idea for improvement? Suggest it!
+                Can't find what you're looking for? Request it here and we'll add it to our collection!
               </p>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -750,26 +764,29 @@ const Mediator = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-cyan-200 mb-2">Request Type</label>
+                  <label className="block text-cyan-200 mb-2">Content Type</label>
                   <select
                     name="requestType"
                     value={requestData.requestType}
                     onChange={handleRequestChange}
                     className="w-full bg-indigo-900/30 border border-indigo-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
                   >
-                    <option value="content">Content Request</option>
-                    <option value="feature">Feature Request</option>
-                    <option value="suggestion">Improvement Suggestion</option>
+                    <option value="movie">Movie</option>
+                    <option value="game">Game</option>
+                    <option value="series">TV Series</option>
+                    <option value="anime">Anime</option>
+                    <option value="app">Application</option>
+                    <option value="other">Other</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-cyan-200 mb-2">Your Message</label>
+                  <label className="block text-cyan-200 mb-2">Your Request</label>
                   <textarea
                     name="message"
                     value={requestData.message}
                     onChange={handleRequestChange}
                     className="w-full bg-indigo-900/30 border border-indigo-700 text-white p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
-                    placeholder="What would you like us to add or improve?"
+                    placeholder="What content would you like us to add?"
                     rows="4"
                     required
                   ></textarea>
