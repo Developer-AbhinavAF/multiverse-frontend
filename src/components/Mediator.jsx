@@ -38,21 +38,21 @@ const Mediator = () => {
 
   // Fixed collection endpoints
   const endpoints = {
-    movies: "https://multiverse-backend.onrender.com/api/movies",
-    pcGames: "https://multiverse-backend.onrender.com/api/pcGames",
-    androidGames: "https://multiverse-backend.onrender.com/api/androidGame",
-    iosGames: "https://multiverse-backend.onrender.com/api/iosGames",
-    animeMovie: "https://multiverse-backend.onrender.com/api/animeMovie",
-    animeSeries: "https://multiverse-backend.onrender.com/api/animeSeries",
-    webSeries: "https://multiverse-backend.onrender.com/api/webSeries",
-    pcApps: "https://multiverse-backend.onrender.com/api/pcApps",
-    androidApps: "https://multiverse-backend.onrender.com/api/androidApps",
-    modApks: "https://multiverse-backend.onrender.com/api/modApks",
-    kDramas: "https://multiverse-backend.onrender.com/api/kDramas",
-    cDramas: "https://multiverse-backend.onrender.com/api/cDramas",
-    thaiDramas: "https://multiverse-backend.onrender.com/api/thaiDramas",
-    japaneseDramas: "https://multiverse-backend.onrender.com/api/japaneseDramas",
-    pakistaniDramas: "https://multiverse-backend.onrender.com/api/pakistaniDramas",
+    movies: "https://backend-0nxk.onrender.com/api/movies",
+    pcGames: "https://backend-0nxk.onrender.com/api/pcGames",
+    androidGames: "https://backend-0nxk.onrender.com/api/androidGame",
+    iosGames: "https://backend-0nxk.onrender.com/api/iosGames",
+    animeMovie: "https://backend-0nxk.onrender.com/api/animeMovie",
+    animeSeries: "https://backend-0nxk.onrender.com/api/animeSeries",
+    webSeries: "https://backend-0nxk.onrender.com/api/webSeries",
+    pcApps: "https://backend-0nxk.onrender.com/api/pcApps",
+    androidApps: "https://backend-0nxk.onrender.com/api/androidApps",
+    modApks: "https://backend-0nxk.onrender.com/api/modApks",
+    kDramas: "https://backend-0nxk.onrender.com/api/kDramas",
+    cDramas: "https://backend-0nxk.onrender.com/api/cDramas",
+    thaiDramas: "https://backend-0nxk.onrender.com/api/thaiDramas",
+    japaneseDramas: "https://backend-0nxk.onrender.com/api/japaneseDramas",
+    pakistaniDramas: "https://backend-0nxk.onrender.com/api/pakistaniDramas",
   };
 
   const fetchMedia = useCallback(async () => {
@@ -145,7 +145,7 @@ const Mediator = () => {
       setIsLiked(newLikeState);
       setLikeCount(prev => newLikeState ? prev + 1 : prev - 1);
       
-      await axios.post("https://multiverse-backend.onrender.com/api/likes", {
+      await axios.post("https://backend-0nxk.onrender.com/api/likes", {
         slug,
         mediaId: media?._id,
         type: media?.type,
@@ -220,7 +220,7 @@ const Mediator = () => {
     try {
       setSubmitStatus({ type: 'loading', message: 'Submitting review...' });
       
-      await axios.post(`https://multiverse-backend.onrender.com/api/${collection}/${slug}/review`, reviewData);
+      await axios.post(`https://backend-0nxk.onrender.com/api/${collection}/${slug}/review`, reviewData);
       
       setSubmitStatus({ type: 'success', message: 'Review submitted successfully!' });
       setReviewData({
@@ -243,7 +243,7 @@ const Mediator = () => {
     try {
       setSubmitStatus({ type: 'loading', message: 'Submitting request...' });
       
-      await axios.post(`https://multiverse-backend.onrender.com/api/${collection}/request`, requestData);
+      await axios.post(`https://backend-0nxk.onrender.com/api/${collection}/request`, requestData);
       
       setSubmitStatus({ type: 'success', message: 'Request submitted successfully!' });
       setRequestData({
@@ -261,7 +261,7 @@ const Mediator = () => {
   
   const trackDownload = async (quality) => {
     try {
-      await axios.post(`https://multiverse-backend.onrender.com/api/${collection}/${slug}/download`, {
+      await axios.post(`https://backend-0nxk.onrender.com/api/${collection}/${slug}/download`, {
         quality
       });
     } catch (err) {

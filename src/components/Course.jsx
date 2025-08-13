@@ -25,15 +25,15 @@ const Courses = () => {
 
   // Updated endpoints with Render.com URL
   const endpoints = [
-    "https://multiverse-backend.onrender.com/api/movies",
-    "https://multiverse-backend.onrender.com/api/animeMovie",
-    "https://multiverse-backend.onrender.com/api/animeSeries",
-    "https://multiverse-backend.onrender.com/api/webSeries",
-    "https://multiverse-backend.onrender.com/api/kDramas",
-    "https://multiverse-backend.onrender.com/api/cDramas",
-    "https://multiverse-backend.onrender.com/api/thaiDramas",
-    "https://multiverse-backend.onrender.com/api/japaneseDramas",
-    "https://multiverse-backend.onrender.com/api/pakistaniDramas",
+    "https://backend-0nxk.onrender.com/api/movies",
+    "https://backend-0nxk.onrender.com/api/animeMovie",
+    "https://backend-0nxk.onrender.com/api/animeSeries",
+    "https://backend-0nxk.onrender.com/api/webSeries",
+    "https://backend-0nxk.onrender.com/api/kDramas",
+    "https://backend-0nxk.onrender.com/api/cDramas",
+    "https://backend-0nxk.onrender.com/api/thaiDramas",
+    "https://backend-0nxk.onrender.com/api/japaneseDramas",
+    "https://backend-0nxk.onrender.com/api/pakistaniDramas",
   ];
 
   // Map each endpoint to its collection type (same order as endpoints)

@@ -21,21 +21,21 @@ const Stream = () => {
   const episodesPerPage = isMobile ? 10 : 20;
 
   const endpoints = {
-    movies: "https://multiverse-backend.onrender.com/api/movies",
-    pcGames: "https://multiverse-backend.onrender.com/api/pcGames",
-    androidGames: "https://multiverse-backend.onrender.com/api/androidGames",
-    iosGames: "https://multiverse-backend.onrender.com/api/iosGames",
-    animeMovie: "https://multiverse-backend.onrender.com/api/animeMovie",
-    animeSeries: "https://multiverse-backend.onrender.com/api/animeSeries",
-    webSeries: "https://multiverse-backend.onrender.com/api/webSeries",
-    pcApps: "https://multiverse-backend.onrender.com/api/pcApps",
-    androidApps: "https://multiverse-backend.onrender.com/api/androidApps",
-    modApks: "https://multiverse-backend.onrender.com/api/modApks",
-    kDramas: "https://multiverse-backend.onrender.com/api/kDramas",
-    cDramas: "https://multiverse-backend.onrender.com/api/cDramas",
-    thaiDramas: "https://multiverse-backend.onrender.com/api/thaiDramas",
-    japaneseDramas: "https://multiverse-backend.onrender.com/api/japaneseDramas",
-    pakistaniDramas: "https://multiverse-backend.onrender.com/api/pakistaniDramas",
+    movies: "https://backend-0nxk.onrender.com/api/movies",
+    pcGames: "https://backend-0nxk.onrender.com/api/pcGames",
+    androidGames: "https://backend-0nxk.onrender.com/api/androidGames",
+    iosGames: "https://backend-0nxk.onrender.com/api/iosGames",
+    animeMovie: "https://backend-0nxk.onrender.com/api/animeMovie",
+    animeSeries: "https://backend-0nxk.onrender.com/api/animeSeries",
+    webSeries: "https://backend-0nxk.onrender.com/api/webSeries",
+    pcApps: "https://backend-0nxk.onrender.com/api/pcApps",
+    androidApps: "https://backend-0nxk.onrender.com/api/androidApps",
+    modApks: "https://backend-0nxk.onrender.com/api/modApks",
+    kDramas: "https://backend-0nxk.onrender.com/api/kDramas",
+    cDramas: "https://backend-0nxk.onrender.com/api/cDramas",
+    thaiDramas: "https://backend-0nxk.onrender.com/api/thaiDramas",
+    japaneseDramas: "https://backend-0nxk.onrender.com/api/japaneseDramas",
+    pakistaniDramas: "https://backend-0nxk.onrender.com/api/pakistaniDramas",
   };
 
   const fetchMedia = async () => {
@@ -79,7 +79,7 @@ const Stream = () => {
       setIsLiked(newLikeState);
       setLikeCount(newLikeState ? likeCount + 1 : likeCount - 1);
       
-      await axios.post("https://multiverse-backend.onrender.com/api/likes", {
+      await axios.post("https://backend-0nxk.onrender.com/api/likes", {
         mediaId: media._id,
         slug: media.slug,
         type: media.type,

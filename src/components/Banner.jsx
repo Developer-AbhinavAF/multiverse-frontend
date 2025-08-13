@@ -52,7 +52,7 @@ const Hero = () => {
     try {
       // Search all collections in parallel
       const requests = collections.map(collection => 
-        axios.get(`https://multiverse-backend.onrender.com/api/${collection}`, {
+        axios.get(`https://backend-0nxk.onrender.com/api/${collection}`, {
           params: { search, limit: 5 }
         })
       );

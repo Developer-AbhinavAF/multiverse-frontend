@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
 // Use correct API endpoints and fix useEffect logic
-const BASE_URL = "https://multiverse-backend.onrender.com/api";
+const BASE_URL = "https://backend-0nxk.onrender.com/api";
 
 const sources = [
   { url: `${BASE_URL}/movies`, type: "movie" },
