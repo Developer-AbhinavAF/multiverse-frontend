@@ -36,6 +36,19 @@ const Courses = () => {
     "https://multiverse-backend.onrender.com/api/pakistaniDramas",
   ];
 
+  // Map each endpoint to its collection type (same order as endpoints)
+  const endpointTypes = [
+    "movies",
+    "animeMovie",
+    "animeSeries",
+    "webSeries",
+    "kDramas",
+    "cDramas",
+    "thaiDramas",
+    "japaneseDramas",
+    "pakistaniDramas",
+  ];
+
   const fetchAllMedia = useCallback(async () => {
     try {
       setLoading(true);
@@ -54,8 +67,15 @@ const Courses = () => {
         )
       );
 
-      // Combine all results
-      const allResults = responses.flatMap(response => response.data.results || []);
+      // Combine all results and ensure each item has a proper type based on its endpoint
+      const allResults = responses.flatMap((response, idx) => {
+        const type = endpointTypes[idx];
+        const items = response?.data?.results || [];
+        return items.map(item => ({
+          ...item,
+          type: item.type || type,
+        }));
+      });
       
       setMedia(allResults);
       setTotalPages(Math.ceil(allResults.length / limit));
