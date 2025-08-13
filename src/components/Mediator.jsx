@@ -39,15 +39,9 @@ const Mediator = () => {
   // Fixed collection endpoints
   const endpoints = {
     movies: "https://backend-0nxk.onrender.com/api/movies",
-    pcGames: "https://backend-0nxk.onrender.com/api/pcGames",
-    androidGames: "https://backend-0nxk.onrender.com/api/androidGame",
-    iosGames: "https://backend-0nxk.onrender.com/api/iosGames",
     animeMovie: "https://backend-0nxk.onrender.com/api/animeMovie",
     animeSeries: "https://backend-0nxk.onrender.com/api/animeSeries",
     webSeries: "https://backend-0nxk.onrender.com/api/webSeries",
-    pcApps: "https://backend-0nxk.onrender.com/api/pcApps",
-    androidApps: "https://backend-0nxk.onrender.com/api/androidApps",
-    modApks: "https://backend-0nxk.onrender.com/api/modApks",
     kDramas: "https://backend-0nxk.onrender.com/api/kDramas",
     cDramas: "https://backend-0nxk.onrender.com/api/cDramas",
     thaiDramas: "https://backend-0nxk.onrender.com/api/thaiDramas",
