@@ -3,8 +3,15 @@ import axios from 'axios';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-// Update the API call:
+// Use correct API endpoints and fix useEffect logic
+const BASE_URL = "https://multiverse-backend.onrender.com/api";
 
+const sources = [
+  { url: `${BASE_URL}/movies`, type: "movie" },
+  { url: `${BASE_URL}/webseries`, type: "webSeries" }, // fixed endpoint name
+  { url: `${BASE_URL}/anime/movies`, type: "animeMovie" }, // fixed endpoint name
+  { url: `${BASE_URL}/anime/series`, type: "animeSeries" }, // fixed endpoint name
+];
 
 const LatestUpdates = () => {
   const [updates, setUpdates] = useState([]);
@@ -15,16 +22,39 @@ const LatestUpdates = () => {
     const fetchUpdates = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`https://multiverse-backend.onrender.com/api/updates`);
-        setUpdates(response.data);
+        const res = await Promise.allSettled(
+          sources.map(s => axios.get(s.url, { params: { page: 1, limit: 20 } }))
+        );
+        const items = res.flatMap((r, i) =>
+          r.status === "fulfilled"
+            ? (r.value.data.items || r.value.data.results || []).map(it => ({
+                ...it,
+                type: it.type || sources[i].type,
+                slug: it.slug || it._id || it.title?.replace(/\s+/g, '-').toLowerCase(),
+                thumbnail: it.thumbnail || it.posterUrl || it.poster,
+              }))
+            : []
+        ).sort(
+          (a, b) =>
+            new Date(b.updatedAt || b.createdAt || 0) -
+            new Date(a.updatedAt || a.createdAt || 0)
+        );
+        setUpdates([
+          {
+            _id: "auto-latest",
+            title: "Latest content",
+            date: new Date().toISOString(),
+            description: "Auto feed from Movies/Series/Anime.",
+            mediaItems: items.slice(0, 12),
+          },
+        ]);
       } catch (err) {
-        setError('Failed to fetch updates. Please try again later.');
-        console.error('Error fetching updates:', err);
+        setError("Failed to fetch updates. Please try again later.");
+        console.error("Error fetching updates:", err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchUpdates();
   }, []);
 
@@ -60,7 +90,7 @@ const LatestUpdates = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white pt-20">
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <motion.div 
+        <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -89,12 +119,12 @@ const LatestUpdates = () => {
                   {new Date(update.date).toLocaleDateString()}
                 </span>
               </div>
-              
+
               <div className="mb-6">
                 <p className="text-cyan-200 mb-4">{update.description}</p>
                 {update.link && (
-                  <a 
-                    href={update.link} 
+                  <a
+                    href={update.link}
                     className="text-cyan-400 hover:text-cyan-300 inline-flex items-center"
                     target="_blank"
                     rel="noopener noreferrer"
@@ -106,26 +136,26 @@ const LatestUpdates = () => {
                   </a>
                 )}
               </div>
-              
+
               {update.mediaItems && update.mediaItems.length > 0 && (
                 <div>
                   <h3 className="text-lg font-semibold mb-3 text-amber-300">Featured Content:</h3>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {update.mediaItems.map((item, idx) => (
-                      <Link 
-                        key={idx} 
+                      <Link
+                        key={idx}
                         to={`/media/${item.slug}?collection=${item.type}`}
                         className="group"
                       >
-                        <motion.div 
+                        <motion.div
                           className="bg-gradient-to-br from-indigo-800/30 to-purple-800/30 p-3 rounded-lg border border-indigo-700/50"
                           whileHover={{ scale: 1.03 }}
                         >
                           <div className="aspect-video bg-gradient-to-br from-cyan-900/30 to-fuchsia-900/30 rounded-lg mb-2 flex items-center justify-center">
                             {item.thumbnail ? (
-                              <img 
-                                src={item.thumbnail} 
-                                alt={item.title} 
+                              <img
+                                src={item.thumbnail}
+                                alt={item.title}
                                 className="w-full h-full object-cover rounded-lg"
                               />
                             ) : (

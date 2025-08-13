@@ -27,15 +27,17 @@ const Courses = () => {
   const BASE_URL = "https://multiverse-backend.onrender.com/api";
 
   // Endpoints list
-  const endpoints = [
+  const endpoints = [ 
     `${BASE_URL}/movies`,
     `${BASE_URL}/animeMovie`,
     `${BASE_URL}/animeSeries`,
-    `${BASE_URL}/webSeries`,
-    `${BASE_URL}/kDramas`,
-    `${BASE_URL}/cDramas`,
-    `${BASE_URL}/thaiDramas`,
-    `${BASE_URL}/japaneseDramas`,
+    `${BASE_URL}/webSeries`, 
+    `${BASE_URL}/pcGames`,
+    `${BASE_URL}/pcApps`,
+    `${BASE_URL}/androidGames`,
+    `${BASE_URL}/androidApps`,
+    `${BASE_URL}/iosGames`,
+    `${BASE_URL}/modApks`,
   ];
 
   const fetchAllMedia = useCallback(async () => {
