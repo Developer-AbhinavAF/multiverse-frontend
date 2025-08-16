@@ -114,7 +114,7 @@ const Mediator = () => {
           if (options.length > 0) setSelectedQuality(options[0].quality);
           
           // Set initial like count
-          setLikeCount(response.data.likes || 0);
+          setLikeCount(response.data.likeCount || 0);
         }
       } catch (err) {
         console.error("Fetch error:", err);
@@ -134,22 +134,26 @@ const Mediator = () => {
   }, [fetchMedia]);
 
   const handleLike = async () => {
+    const newLikeState = !isLiked;
+    // Optimistic UI
+    setIsLiked(newLikeState);
+    setLikeCount(prev => Math.max(0, newLikeState ? prev + 1 : prev - 1));
+
     try {
-      const newLikeState = !isLiked;
-      setIsLiked(newLikeState);
-      setLikeCount(prev => newLikeState ? prev + 1 : prev - 1);
-      
-      await axios.post("https://backend-0nxk.onrender.com/api/likes", {
+      const res = await axios.post("https://backend-0nxk.onrender.com/api/likes", {
         slug,
         mediaId: media?._id,
-        type: media?.type,
+        type: media?.type || collection,
         liked: newLikeState
       });
-      
+      if (res?.data?.likeCount !== undefined) {
+        setLikeCount(res.data.likeCount);
+      }
     } catch (err) {
       console.error("Like failed:", err);
-      setIsLiked(!isLiked);
-      setLikeCount(prev => prev + (newLikeState ? -1 : 1));
+      // Revert UI on failure
+      setIsLiked(!newLikeState);
+      setLikeCount(prev => Math.max(0, newLikeState ? prev - 1 : prev + 1));
     }
   };
 

@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FaReact, FaNodeJs, FaPython, FaJava, FaDocker, FaAws, FaDatabase, FaFigma, FaGitAlt, FaDownload, FaHeart, FaStar, FaGithub } from 'react-icons/fa';
-import { SiJavascript, SiTypescript, SiMongodb, SiFirebase, SiRedux, SiNextdotjs, SiTailwindcss } from 'react-icons/si';
+import { 
+  SiJavascript, SiTypescript, SiMongodb, SiFirebase, SiRedux, SiNextdotjs, SiTailwindcss,
+  SiGraphql, SiExpress, SiPrisma, SiPostgresql, SiSqlite, SiVite, SiKubernetes, SiNginx,
+  SiRedis, SiThreedotjs, SiExpo
+} from 'react-icons/si';
 
 const AboutUs = () => {
   const [activeSkill, setActiveSkill] = useState(null);
@@ -32,6 +36,17 @@ const AboutUs = () => {
     { id: 15, name: "Figma", icon: <FaFigma />, color: "from-purple-400 to-fuchsia-600" },
     { id: 16, name: "Git", icon: <FaGitAlt />, color: "from-orange-600 to-red-700" },
     { id: 17, name: "Github", icon: <FaGithub />, color: "from-gray-600 to-white-700" },
+    { id: 18, name: "GraphQL", icon: <SiGraphql />, color: "from-pink-500 to-rose-600" },
+    { id: 19, name: "Express", icon: <SiExpress />, color: "from-gray-600 to-gray-900" },
+    { id: 20, name: "Prisma", icon: <SiPrisma />, color: "from-slate-500 to-slate-800" },
+    { id: 21, name: "PostgreSQL", icon: <SiPostgresql />, color: "from-sky-500 to-blue-700" },
+    { id: 22, name: "SQLite", icon: <SiSqlite />, color: "from-cyan-500 to-blue-700" },
+    { id: 23, name: "Vite", icon: <SiVite />, color: "from-purple-500 to-yellow-500" },
+    { id: 24, name: "Kubernetes", icon: <SiKubernetes />, color: "from-blue-500 to-indigo-700" },
+    { id: 25, name: "Nginx", icon: <SiNginx />, color: "from-green-500 to-emerald-700" },
+    { id: 26, name: "Redis", icon: <SiRedis />, color: "from-red-500 to-rose-700" },
+    { id: 27, name: "Three.js", icon: <SiThreedotjs />, color: "from-gray-700 to-black" },
+    { id: 28, name: "Expo", icon: <SiExpo />, color: "from-neutral-600 to-black" },
   ];
 
   // Team members data
