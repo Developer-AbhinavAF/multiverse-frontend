@@ -8,30 +8,28 @@ function Cards({ item, collection }) {
   // Map collections to display types
   const collectionTypeMap = {
     movies: "Movie",
-    pcGames: "PC Game",
-    androidGames: "Android Game",
-    iosGames: "iOS Game",
+    pakistaniDramas: "Pakistani Drama",
+    japaneseDramas: "Japanese Drama",
+    kDramas: "K-Drama",
     animeMovie: "Anime Movie",
     animeSeries: "Anime Series",
     webSeries: "Web Series",
-    pcApps: "PC App",
-    androidApps: "Android App",
-    modApks: "Mod Apk"
+    cDramas: "C-Drama",
+    thaiDramas: "Thai Drama"
   };
 
   // Map collections to colors
   const getTypeColor = (collection) => {
     const colorMap = {
       movies: "bg-red-600",
-      pcGames: "bg-blue-600",
-      androidGames: "bg-green-600",
-      iosGames: "bg-purple-600",
+      pakistaniDramas: "bg-blue-600",
+      japaneseDramas: "bg-purple-600",
+      kDramas: "bg-green-600",
       animeMovie: "bg-pink-600",
       animeSeries: "bg-indigo-600",
       webSeries: "bg-teal-600",
-      pcApps: "bg-amber-600",
-      androidApps: "bg-cyan-600",
-      modApks: "bg-orange-600"
+      cDramas: "bg-amber-600",
+      thaiDramas: "bg-cyan-600"
     };
     return colorMap[collection] || "bg-gray-600";
   };

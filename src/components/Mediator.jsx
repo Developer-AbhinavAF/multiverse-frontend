@@ -159,8 +159,8 @@ const Mediator = () => {
 
   const handleShare = () => {
     const shareData = {
-      title: media?.title || "Media on Multiverse",
-      text: `Check out this media on Multiverse: ${media?.title}`,
+      title: media?.title || "Media on SkyVeil",
+      text: `Check out this media on SkyVeil: ${media?.title}`,
       url: window.location.href
     };
 

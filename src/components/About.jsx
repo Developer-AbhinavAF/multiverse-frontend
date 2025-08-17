@@ -55,28 +55,28 @@ const AboutUs = () => {
       id: 1,
       name: "Abhinav",
       role: "Founder & CEO",
-      bio: "Tech visionary with 10+ years in software development. Passionate about creating solutions that make a difference.",
+      bio: "",
       color: "from-blue-400 to-indigo-600"
     },
     {
       id: 2,
-      name: "Rahul",
-      role: "Lead Designer",
-      bio: "Creative designer specializing in UI/UX with a focus on user-centered design principles.",
+      name: "Abhinav",
+      role: "UI/UX Designer",
+      bio: "",
       color: "from-pink-500 to-rose-600"
     },
     {
       id: 3,
-      name: "Vikram",
-      role: "CTO",
-      bio: "Full-stack developer and systems architect with expertise in scalable cloud solutions.",
+      name: "Abhinav",
+      role: "Backend Creator & Manager",
+      bio: "",
       color: "from-green-500 to-emerald-600"
     },
     {
       id: 4,
-      name: "Priya",
-      role: "Marketing Director",
-      bio: "Digital marketing expert with a track record of building engaged communities around tech products.",
+      name: "Abhinav",
+      role: "Fullstack Developer & Marketing Director",
+      bio: "",
       color: "from-yellow-400 to-amber-600"
     }
   ];
@@ -244,7 +244,7 @@ const AboutUs = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3, duration: 1 }}
           >
-            About <span className="text-white">Multiverse</span>
+            About <span className="text-white">SkyVeil</span>
           </motion.h1>
           
           <motion.p 
@@ -290,7 +290,7 @@ const AboutUs = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5, duration: 0.7 }}
                 >
-                  Founded in 2020, Multiverse began as a small team of developers and designers united by a shared vision: to create digital experiences that push boundaries and redefine what's possible.
+                  Founded in 2020, SkyVeil began as a small team of developers and designers united by a shared vision: to create digital experiences that push boundaries and redefine what's possible.
                 </motion.p>
                 
                 <motion.p 

@@ -94,7 +94,7 @@ const Stream = () => {
   const handleShare = () => {
     const shareData = {
       title: media.title,
-      text: `Watch ${media.title} on Multiverse`,
+      text: `Watch ${media.title} on SkyVeil`,
       url: window.location.href
     };
 

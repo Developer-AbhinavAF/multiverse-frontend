@@ -31,8 +31,8 @@ const Navbar = () => {
         </Link>
       </li>
       <li>
-        <Link to="/contact" className="hover:text-[#00E0FF] duration-200">
-          Contact
+        <Link to="/updates" className="hover:text-[#00E0FF] duration-200">
+          Updates
         </Link>
       </li>
       <li>
@@ -41,8 +41,8 @@ const Navbar = () => {
         </Link>
       </li>
       <li>
-        <Link to="/updates" className="hover:text-[#00E0FF] duration-200">
-          Updates
+        <Link to="/contact" className="hover:text-[#00E0FF] duration-200">
+          Contact
         </Link>
       </li>
     </>
@@ -53,7 +53,7 @@ const Navbar = () => {
       <div className="navbar max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between mb-0">
         {/* Left Logo */}
         <div className="text-2xl font-bold tracking-wide text-[#00E0FF] cursor-pointer">
-          Multiverse
+          SkyVeil
         </div>
 
         {/* Desktop Search Bar */}

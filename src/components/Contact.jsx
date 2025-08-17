@@ -63,7 +63,7 @@ const Contact = () => {
                     </svg>
                   </div>
                   <div>
-                    <p className="text-xl">support@multiverse.com</p>
+                    <p className="text-xl">support@skyveil.com</p>
                     <p className="text-cyan-300">Response within 24 hours</p>
                   </div>
                 </div>

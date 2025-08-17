@@ -171,7 +171,7 @@ const Hero = () => {
             transition={{ duration: 0.8 }}
             data-aos="fade-down"
           >
-            Welcome to <span className="text-[#00E0FF]">Multiverse</span>
+            Welcome to <span className="text-[#00E0FF]">SkyVeil</span>
           </motion.h1>
 
           <motion.p
