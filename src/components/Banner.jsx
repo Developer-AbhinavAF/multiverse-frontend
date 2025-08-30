@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import Cards from "./Cards";
 
 const Hero = () => {
   const [search, setSearch] = useState("");
@@ -67,7 +68,12 @@ const Hero = () => {
         if (res.status !== "fulfilled") return [];
         const items = res.value?.data?.results || [];
         const collection = requests[idx].collection;
-        return items.map((it) => ({ ...it, collection }));
+        return items.map((it) => ({
+          ...it,
+          collection,
+          slug: it.slug || it._id || (it.title ? it.title.replace(/\s+/g, "-").toLowerCase() : undefined),
+          thumbnail: it.thumbnail || it.posterUrl || it.poster || it.image,
+        }));
       });
 
       setResults(combinedResults.slice(0, 8)); // Limit to 8 results
@@ -295,7 +301,7 @@ const Hero = () => {
       </section>
 
       {/* RESULTS SECTION */}
-      <section className="py-16 px-4 sm:px-6 border-t border-white/10 min-h-[50vh]">
+      <section ref={searchSectionRef} className="py-16 px-4 sm:px-6 border-t border-white/10 min-h-[50vh]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-8 text-[#FF5E3A]">
             {searched ? "Search Results" : ""}
@@ -324,38 +330,7 @@ const Hero = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {results.length > 0
                 ? results.map((item) => (
-                    <div
-                      key={item._id}
-                      onClick={() => handleResultClick(item)}
-                    >
-                        <div className="rounded-xl p-5 bg-white/5 border border-white/10 cursor-pointer">
-                          <div className="bg-gray-700/40 rounded-xl w-full h-48 mb-4 flex items-center justify-center overflow-hidden">
-                            {item.thumbnail ? (
-                              <img 
-                                src={item.thumbnail} 
-                                alt={item.title} 
-                                className="media-img w-full h-full object-cover rounded-xl"
-                              />
-                            ) : (
-                              <span className="text-6xl">📁</span>
-                            )}
-                          </div>
-
-                          <h3 className="font-bold text-lg mb-2">{item.title}</h3>
-                          <div className="flex justify-between text-sm text-[#A0A0B2] mb-3">
-                            <span>{item.collection}</span>
-                            <span>{item.fileSize || item.gameSize || "Unknown"}</span>
-                          </div>
-                          <div className="flex justify-between items-center">
-                            <span className="text-[#00E0FF] text-sm">
-                              {item.rating ? `⭐ ${item.rating}` : "No rating"}
-                            </span>
-                            <button className="bg-[#6C5DD3] hover:bg-[#5a4fc2] px-4 py-1 rounded-lg text-sm transition-colors">
-                              View
-                            </button>
-                          </div>
-                        </div>
-                    </div>
+                    <Cards key={`${item.collection}-${item.slug || item._id}`} item={item} collection={item.collection} />
                   ))
                 : searched && !loading && (
                     <div className="text-center col-span-full py-12">

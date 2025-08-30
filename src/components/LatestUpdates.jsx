@@ -93,7 +93,7 @@ const LatestUpdates = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 text-white flex items-center justify-center">
+      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-400 mx-auto mb-4"></div>
           <p className="text-xl">Loading updates...</p>
@@ -104,7 +104,7 @@ const LatestUpdates = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 text-white flex items-center justify-center">
+      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 text-white flex items-center justify-center">
         <div className="text-center max-w-md p-8 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10">
           <div className="text-amber-400 text-5xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-white mb-4">Update Error</h2>
@@ -121,10 +121,10 @@ const LatestUpdates = () => {
   }
 
   return (
-    <div className="min-h-screen text-white pt-20">
-      <div className="max-w-6xl mx-auto px-4 py-12">
+    <div className="min-h-screen text-white pt-24 pb-8">
+      <div className="max-w-6xl mx-auto px-4 py-8">
         <motion.div
-          className="text-center mb-16"
+          className="text-center mb-10"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
@@ -207,7 +207,7 @@ const LatestUpdates = () => {
           ))}
         </div>
 
-        <div className="mt-16 text-center">
+        <div className="mt-10 text-center">
           <motion.button
             className="text-white px-8 py-3 rounded-xl font-medium shadow-lg bg-white/10 hover:bg-white/15 border border-white/10 backdrop-blur-md"
             whileHover={{ scale: 1.05 }}

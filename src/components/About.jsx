@@ -200,13 +200,13 @@ const AboutUs = () => {
   `;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white overflow-hidden pt-24 pb-8">
       <style>{floatAnimation}</style>
       
       {/* Floating particles container */}
       <div className="particles-container fixed inset-0 overflow-hidden pointer-events-none z-0" />
       
-      <div className="container mx-auto px-4 py-16 relative z-10">
+      <div className="container mx-auto px-4 py-8 relative z-10">
         {/* Navigation Tabs */}
         <motion.div 
           className="flex justify-center mb-12"

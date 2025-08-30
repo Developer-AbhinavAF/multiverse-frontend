@@ -168,7 +168,7 @@ const Stream = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 text-neutral-200 bg-transparent flex items-center justify-center">
+      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 text-neutral-200 bg-transparent flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-400 mx-auto mb-4"></div>
           <p className="text-xl">Loading streaming details...</p>
@@ -179,7 +179,7 @@ const Stream = () => {
 
   if (error || !media) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 flex items-center justify-center text-neutral-200">
+      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 flex items-center justify-center text-neutral-200">
         <div className="text-center max-w-md p-8 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
           <div className="text-amber-400 text-5xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-white mb-4">Stream Unavailable</h2>
@@ -196,7 +196,7 @@ const Stream = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 text-neutral-200">
+    <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 text-neutral-200">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <button 

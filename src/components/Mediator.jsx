@@ -276,7 +276,7 @@ const Mediator = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white flex items-center justify-center">
+      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-400 mx-auto mb-4"></div>
           <p className="text-xl">Loading media details...</p>
@@ -287,7 +287,7 @@ const Mediator = () => {
 
   if (error || !media) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-stone-700 via-gray-900 to-black flex items-center justify-center">
+      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 bg-gradient-to-br from-stone-700 via-gray-900 to-black flex items-center justify-center">
         <div className="text-center max-w-md p-8 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl">
           <div className="text-red-400 text-5xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-neutral-100 mb-4">Media Unavailable</h2>
@@ -309,7 +309,7 @@ const Mediator = () => {
   const selectedDownload = downloadOptions.find(opt => opt.quality === selectedQuality);
 
   return (
-    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white">
+    <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white">
       <div className="max-w-5xl mx-auto">
         <button 
           onClick={() => navigate(-1)}
