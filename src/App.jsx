@@ -35,7 +35,7 @@ function App() {
   return (
     <div className="min-h-screen text-neutral-200 relative">
       <Navbar />
-      <main className="pt-16 relative z-10">
+      <main className="relative z-10 pt-4 md:pt-6">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about-us" element={<About />} />
