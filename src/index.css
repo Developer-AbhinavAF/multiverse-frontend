@@ -21,7 +21,7 @@ body {
 
 /* Elegant Monochrome Theme (static) */
 [data-theme="mono"] body {
-  background: #0d0d0d;
+  background: #000000;
 }
 
 /* remove aggressive background hue shifts for a calmer look */

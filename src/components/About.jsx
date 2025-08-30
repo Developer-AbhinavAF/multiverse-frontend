@@ -200,7 +200,7 @@ const AboutUs = () => {
   `;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white overflow-hidden pt-24 pb-8">
+    <div className="min-h-[100dvh] bg-black text-white overflow-hidden pt-14 pb-0">
       <style>{floatAnimation}</style>
       
       {/* Floating particles container */}

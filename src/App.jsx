@@ -33,9 +33,9 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
   return (
-    <div className="min-h-screen text-neutral-200 relative">
-      <Navbar />
+    <div className="min-h-screen text-neutral-200 relative bg-black">
       <main className="pt-16 relative z-10">
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about-us" element={<About />} />

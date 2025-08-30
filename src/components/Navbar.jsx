@@ -29,9 +29,9 @@ function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50">
+    <header className="fixed top-4 inset-x-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="mt-3 rounded-2xl border border-white/10 bg-gradient-to-r from-slate-900/60 via-slate-900/40 to-slate-900/60 backdrop-blur-md shadow-lg shadow-black/20">
+        <div className="mt-0 rounded-2xl border border-white/10 bg-gradient-to-r from-cyan-900/40 via-fuchsia-900/20 to-indigo-900/40 backdrop-blur-md shadow-lg shadow-cyan-500/20">
           <div className="flex items-center justify-between h-14 px-6">
 
             {/* Brand */}
@@ -51,8 +51,8 @@ function Navbar() {
                   to={item.to}
                   className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                     isActive(item.to)
-                      ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white"
-                      : "text-cyan-200 hover:bg-white/10 border border-transparent hover:border-white/10"
+                      ? "bg-gradient-to-r from-cyan-500 via-fuchsia-500 to-indigo-500 text-white shadow-md shadow-cyan-500/20"
+                      : "text-cyan-200 hover:text-white hover:bg-cyan-500/10 border border-transparent hover:border-cyan-400/30"
                   }`}
                 >
                   {item.label}
@@ -85,7 +85,7 @@ function Navbar() {
                     />
                   )}
                   {searchOpen && (
-                    <button type="submit" className="px-3 py-2 text-sm bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">Go</button>
+                    <button type="submit" className="px-3 py-2 text-sm bg-gradient-to-r from-emerald-400 to-cyan-500 hover:from-emerald-500 hover:to-cyan-600 text-white">Go</button>
                   )}
                 </div>
               </form>
@@ -125,8 +125,8 @@ function Navbar() {
                     onClick={() => setOpen(false)}
                     className={`px-3 py-2 rounded-lg text-sm ${
                       isActive(item.to)
-                        ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white"
-                        : "text-cyan-200 hover:bg-white/10 border border-transparent hover:border-white/10"
+                        ? "bg-gradient-to-r from-cyan-600 via-fuchsia-600 to-indigo-600 text-white"
+                        : "text-cyan-200 hover:text-white hover:bg-cyan-500/20 border border-transparent hover:border-cyan-400/40"
                     }`}
                   >
                     {item.label}
@@ -145,7 +145,7 @@ function Navbar() {
                       placeholder="Search..."
                       className="bg-transparent flex-1 text-white placeholder:text-neutral-400 focus:outline-none"
                     />
-                    <button type="submit" className="px-3 py-1.5 text-sm rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white">Go</button>
+                    <button type="submit" className="px-3 py-1.5 text-sm rounded-md bg-gradient-to-r from-emerald-400 to-cyan-500 text-white">Go</button>
                   </div>
                 </form>
               </nav>

@@ -14,7 +14,7 @@ const Contact = () => {
 
   return (
     <motion.div 
-      className="min-h-screen bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white pt-24 pb-8 px-4"
+      className="min-h-screen bg-black text-white pt-24 pb-8 px-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
