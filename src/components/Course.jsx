@@ -16,7 +16,7 @@ const Courses = () => {
   const [pageBlock, setPageBlock] = useState(0);
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const [sortOption, setSortOption] = useState("newest");
+  const [sortOption, setSortOption] = useState("rating");
   const [qualityFilter, setQualityFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState(0);
   const [yearFilter, setYearFilter] = useState("");
@@ -54,31 +54,31 @@ const Courses = () => {
       setLoading(true);
       setError(null);
 
-      // Fetch from all endpoints
-      const responses = await Promise.all(
-        endpoints.map(endpoint => 
+      // Fetch from all endpoints, tolerate partial failures
+      const responses = await Promise.allSettled(
+        endpoints.map((endpoint) =>
           axios.get(endpoint, {
             params: {
               search: submittedSearch,
-              page: 1,  // Always request first page from each endpoint
-              limit: 100
-            }
+              page: 1, // Always request first page from each endpoint
+              limit: 100,
+            },
           })
         )
       );
 
-      // Combine all results and ensure each item has a proper type based on its endpoint
-      const allResults = responses.flatMap((response, idx) => {
+      // Combine successful results and ensure each item has a proper type based on its endpoint
+      const allResults = responses.flatMap((res, idx) => {
+        if (res.status !== "fulfilled") return [];
         const type = endpointTypes[idx];
-        const items = response?.data?.results || [];
-        return items.map(item => ({
+        const items = res.value?.data?.results || [];
+        return items.map((item) => ({
           ...item,
           type: item.type || type,
         }));
       });
       
       setMedia(allResults);
-      setTotalPages(Math.ceil(allResults.length / limit));
     } catch (err) {
       console.error("Fetch error:", err);
       setError("Failed to fetch media. Please try again later.");
@@ -139,7 +139,7 @@ const Courses = () => {
       return item.qualities && item.qualities[qualityFilter];
     })
     // Filter by rating
-    .filter(item => item.rating >= ratingFilter)
+    .filter(item => (item.rating || 0) >= Number(ratingFilter))
     // Filter by year
     .filter(item => {
       if (!yearFilter) return true;
@@ -148,19 +148,43 @@ const Courses = () => {
     })
     // Sorting
     .sort((a, b) => {
+      // Extract comparable values with sensible fallbacks
+      const dateA = a.releaseDate ? new Date(a.releaseDate).getTime() : 0;
+      const dateB = b.releaseDate ? new Date(b.releaseDate).getTime() : 0;
+      const ratingA = typeof a.rating === 'number' ? a.rating : parseFloat(a.rating) || 0;
+      const ratingB = typeof b.rating === 'number' ? b.rating : parseFloat(b.rating) || 0;
+      const titleA = (a.title || '').toString();
+      const titleB = (b.title || '').toString();
+
       if (sortOption === "newest") {
-        return new Date(b.releaseDate) - new Date(a.releaseDate);
+        if (dateB !== dateA) return dateB - dateA;
+        if (ratingB !== ratingA) return ratingB - ratingA;
+        return titleA.localeCompare(titleB);
       } else if (sortOption === "oldest") {
-        return new Date(a.releaseDate) - new Date(b.releaseDate);
+        if (dateA !== dateB) return dateA - dateB;
+        if (ratingB !== ratingA) return ratingB - ratingA;
+        return titleA.localeCompare(titleB);
       } else if (sortOption === "rating") {
-        return (b.rating || 0) - (a.rating || 0);
+        if (ratingB !== ratingA) return ratingB - ratingA;
+        if (dateB !== dateA) return dateB - dateA;
+        return titleA.localeCompare(titleB);
       } else if (sortOption === "title") {
-        return a.title.localeCompare(b.title);
+        const tComp = titleA.localeCompare(titleB);
+        if (tComp !== 0) return tComp;
+        if (ratingB !== ratingA) return ratingB - ratingA;
+        return dateB - dateA;
       }
       return 0;
     });
 
   const paginatedMedia = filteredMedia.slice((page - 1) * limit, page * limit);
+
+  // Keep total pages in sync with current filtered results
+  useEffect(() => {
+    setTotalPages(Math.max(1, Math.ceil(filteredMedia.length / limit)));
+    // Clamp page into valid range if current page exceeds new total pages
+    setPage((prev) => Math.min(prev, Math.max(1, Math.ceil(filteredMedia.length / limit))));
+  }, [filteredMedia]);
 
   const filters = [
     { id: "all", label: "All Media" },
@@ -244,25 +268,25 @@ const Courses = () => {
   // Skeleton Loading
   const SkeletonCard = () => (
     <motion.div variants={itemVariants} className="flex flex-col h-full w-full">
-      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-900 to-pink-800 h-80">
-        <div className="absolute inset-0 transform -translate-x-full bg-gradient-to-r from-transparent via-purple-700/50 to-transparent animate-shimmer" />
+      <div className="relative overflow-hidden rounded-xl bg-white/10 h-80 border border-white/10">
+        <div className="absolute inset-0 transform -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" />
       </div>
       <div className="mt-4 space-y-3">
-        <div className="h-6 bg-purple-900/50 rounded w-3/4"></div>
-        <div className="h-4 bg-purple-900/50 rounded w-1/2"></div>
+        <div className="h-6 bg-white/10 rounded w-3/4"></div>
+        <div className="h-4 bg-white/10 rounded w-1/2"></div>
       </div>
     </motion.div>
   );
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800">
-        <div className="text-center p-8 bg-gradient-to-br from-gray-900/70 to-indigo-900/50 backdrop-blur-xl rounded-2xl border border-purple-500/30">
+      <div className="min-h-screen flex items-center justify-center text-neutral-200">
+        <div className="text-center p-8 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
           <div className="text-amber-400 text-5xl mb-4">⚠️</div>
-          <h3 className="text-amber-400 text-xl font-semibold mb-2">{error}</h3>
+          <h3 className="text-white text-xl font-semibold mb-2">{error}</h3>
           <button
             onClick={fetchAllMedia}
-            className="mt-4 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white px-6 py-2 rounded-xl shadow-lg"
+            className="mt-4 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white px-6 py-2 rounded-xl shadow-lg"
           >
             Retry
           </button>
@@ -272,7 +296,7 @@ const Courses = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-stone-600 via-gray-900 to-black pt-[130px] pb-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen text-neutral-200 pt-[130px] pb-12 px-4 sm:px-6 lg:px-8">
       <style>{`
         @keyframes shimmer {
           0% { transform: translateX(-100%); }
@@ -297,18 +321,18 @@ const Courses = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setIsSearchFocused(true)}
               onBlur={() => setIsSearchFocused(false)}
-              className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-indigo-500/30 text-white backdrop-blur-sm"
+              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-neutral-200 backdrop-blur-sm placeholder:text-neutral-400 focus:outline-none"
               animate={{
                 borderColor: isSearchFocused
-                  ? "rgba(99, 102, 241, 0.7)"
-                  : "rgba(99, 102, 241, 0.3)",
+                  ? "rgba(34, 211, 238, 0.7)"
+                  : "rgba(255, 255, 255, 0.12)",
                 boxShadow: isSearchFocused
-                  ? "0 0 0 3px rgba(99, 102, 241, 0.3)"
+                  ? "0 0 0 3px rgba(34, 211, 238, 0.25)"
                   : "0 4px 20px rgba(0, 0, 0, 0.2)",
               }}
               transition={{ duration: 0.3 }}
             />
-            <div className="absolute right-3 top-3 text-purple-400">
+            <div className="absolute right-3 top-3 text-cyan-300">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5"
@@ -328,7 +352,7 @@ const Courses = () => {
 
           <motion.button
             type="submit"
-            className="bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg"
+            className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white px-6 py-3 rounded-xl flex items-center gap-2 shadow-lg"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -351,7 +375,7 @@ const Courses = () => {
         </form>
 
         {/* Advanced Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-gradient-to-br from-purple-900/50 to-pink-900/50 p-4 rounded-xl border border-purple-500/30">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8 bg-white/5 p-4 rounded-xl border border-white/10 backdrop-blur-sm">
           {/* Category Filter */}
           <div>
             <label className="block text-sm font-medium text-cyan-200 mb-2">
@@ -370,8 +394,8 @@ const Courses = () => {
                   }}
                   className={`px-3 py-1 rounded-lg text-xs font-medium ${
                     activeFilter === filter.id
-                      ? "bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
-                      : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200 hover:from-purple-800/70 hover:to-pink-800/70"
+                      ? "bg-gradient-to-r from-teal-500 to-cyan-600 text-white"
+                      : "bg-white/10 text-cyan-200 hover:bg-white/15 border border-white/10"
                   }`}
                 >
                   {filter.label}
@@ -379,7 +403,7 @@ const Courses = () => {
               ))}
             </div>
           </div>
-          
+
           {/* Quality Filter */}
           <div>
             <label className="block text-sm font-medium text-cyan-200 mb-2">
@@ -395,7 +419,7 @@ const Courses = () => {
                   className={`px-3 py-1 rounded-lg text-xs font-medium ${
                     qualityFilter === quality.id
                       ? "bg-gradient-to-r from-blue-500 to-cyan-600 text-white"
-                      : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200 hover:from-purple-800/70 hover:to-pink-800/70"
+                      : "bg-white/10 text-cyan-200 hover:bg-white/15 border border-white/10"
                   }`}
                 >
                   {quality.label}
@@ -403,7 +427,7 @@ const Courses = () => {
               ))}
             </div>
           </div>
-          
+
           {/* Rating Filter */}
           <div>
             <label className="block text-sm font-medium text-cyan-200 mb-2">
@@ -416,14 +440,14 @@ const Courses = () => {
                 max="10"
                 value={ratingFilter}
                 onChange={(e) => setRatingFilter(e.target.value)}
-                className="w-full accent-amber-500"
+                className="w-full accent-cyan-500"
               />
-              <div className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 px-3 py-1 rounded-lg text-sm text-amber-300">
+              <div className="bg-white/10 px-3 py-1 rounded-lg text-sm text-cyan-300 border border-white/10">
                 {ratingFilter}⭐
               </div>
             </div>
           </div>
-          
+
           {/* Year Filter */}
           <div>
             <label className="block text-sm font-medium text-cyan-200 mb-2">
@@ -432,7 +456,7 @@ const Courses = () => {
             <select
               value={yearFilter}
               onChange={(e) => setYearFilter(e.target.value)}
-              className="w-full bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-700 text-white py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="w-full bg-white/10 border border-white/10 text-neutral-200 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               <option value="">All Years</option>
               {years.map(year => (
@@ -441,7 +465,7 @@ const Courses = () => {
             </select>
           </div>
         </div>
-        
+
         {/* Sort Options */}
         <div className="flex justify-between items-center mb-8">
           <div className="text-cyan-200 text-sm">
@@ -452,7 +476,7 @@ const Courses = () => {
             <select
               value={sortOption}
               onChange={(e) => setSortOption(e.target.value)}
-              className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-purple-700 text-white py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="bg-white/10 border border-white/10 text-neutral-200 py-2 px-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500"
             >
               {sortOptions.map(option => (
                 <option key={option.id} value={option.id}>{option.label}</option>
@@ -476,12 +500,12 @@ const Courses = () => {
           <>
             {paginatedMedia.length === 0 ? (
               <div className="text-center py-20">
-                <div className="inline-block p-6 bg-gradient-to-br from-indigo-900/30 to-purple-900/30 rounded-2xl backdrop-blur-lg border border-purple-500/30">
-                  <div className="text-amber-400 text-5xl mb-4">🎬</div>
-                  <h3 className="text-2xl font-bold text-teal-300 mb-2">
+                <div className="inline-block p-6 bg-white/5 rounded-2xl backdrop-blur-lg border border-white/10">
+                  <div className="text-cyan-300 text-5xl mb-4">🎬</div>
+                  <h3 className="text-2xl font-bold text-white mb-2">
                     No Media Found
                   </h3>
-                  <p className="text-cyan-300 max-w-md mx-auto">
+                  <p className="text-cyan-200 max-w-md mx-auto">
                     Try adjusting your search or filters.
                   </p>
                 </div>
@@ -519,13 +543,13 @@ const Courses = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
                   >
-                    <div className="flex items-center space-x-2 bg-gradient-to-r from-purple-900/50 to-pink-900/50 backdrop-blur-sm p-2 rounded-xl border border-purple-500/30">
+                    <div className="flex items-center space-x-2 bg-white/5 backdrop-blur-sm p-2 rounded-xl border border-white/10">
                       {pageBlock > 0 && (
                         <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={goToPrevBlock}
-                          className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-800/50 to-purple-800/50 hover:from-indigo-700 hover:to-purple-700 text-white flex items-center"
+                          className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 border border-white/10 text-white flex items-center"
                         >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -556,8 +580,8 @@ const Courses = () => {
                           onClick={() => handlePageChange(pageNum)}
                           className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${
                             page === pageNum
-                              ? "bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/30"
-                              : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200 hover:bg-amber-500/30"
+                              ? "bg-gradient-to-r from-teal-500 to-cyan-600 text-white shadow-lg shadow-cyan-500/20"
+                              : "bg-white/10 text-cyan-200 hover:bg-white/15 border border-white/10"
                           }`}
                         >
                           {pageNum}
@@ -569,7 +593,7 @@ const Courses = () => {
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={goToNextBlock}
-                          className="px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-800/50 to-purple-800/50 hover:from-indigo-700 hover:to-purple-700 text-white flex items-center"
+                          className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/15 border border-white/10 text-white flex items-center"
                         >
                           Next
                           <svg
@@ -598,6 +622,7 @@ const Courses = () => {
       </div>
     </div>
   );
+
 };
 
 export default Courses;

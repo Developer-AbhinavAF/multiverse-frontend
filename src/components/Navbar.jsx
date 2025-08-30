@@ -1,155 +1,160 @@
-import React, { useState, useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useTheme } from "../context/ThemeProvider";
 
-const Navbar = () => {
+const navItems = [
+  { to: "/", label: "Home" },
+  { to: "/updates", label: "Latest Updates" },
+  { to: "/about-us", label: "About us" },
+  { to: "/contact", label: "Contact" },
+];
+
+function Navbar() {
+  const { theme } = useTheme();
+  const [open, setOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [q, setQ] = useState("");
+  const location = useLocation();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
-  const searchInputRef = useRef(null);
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      navigate("/search");
-    }
-    setSearchQuery("");
+  const isActive = (path) => location.pathname === path;
+
+  const submitSearch = (e) => {
+    e?.preventDefault();
+    const term = q.trim();
+    if (!term) return;
+    setOpen(false);
+    setSearchOpen(false);
+    navigate(`/search?q=${encodeURIComponent(term)}`);
   };
-
-  const handleSearchClick = () => {
-    if (window.innerWidth <= 768) {
-      navigate("/search");
-    }
-  };
-
-  const navItems = (
-    <>
-      <li>
-        <Link to="/" className="hover:text-[#00E0FF] duration-200">
-          Home
-        </Link>
-      </li>
-      <li>
-        <Link to="/updates" className="hover:text-[#00E0FF] duration-200">
-          Updates
-        </Link>
-      </li>
-      <li>
-        <Link to="/about-us" className="hover:text-[#00E0FF] duration-200">
-          About
-        </Link>
-      </li>
-      <li>
-        <Link to="/contact" className="hover:text-[#00E0FF] duration-200">
-          Contact
-        </Link>
-      </li>
-    </>
-  );
 
   return (
-    <div className="w-full fixed z-50 bg-[#0C081E] text-white shadow-lg">
-      <div className="navbar max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between mb-0">
-        {/* Left Logo */}
-        <div className="text-2xl font-bold tracking-wide text-[#00E0FF] cursor-pointer">
-          SkyVeil
-        </div>
+    <header className="fixed top-0 inset-x-0 z-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mt-3 rounded-2xl border border-white/10 bg-gradient-to-r from-slate-900/60 via-slate-900/40 to-slate-900/60 backdrop-blur-md shadow-lg shadow-black/20">
+          <div className="flex items-center justify-between h-14 px-6">
 
-        {/* Desktop Search Bar */}
-        <div className="hidden lg:flex flex-1 max-w-xl mx-10">
-          <form onSubmit={handleSearchSubmit} className="w-full">
-            <div className="relative w-full">
-              <input
-                ref={searchInputRef}
-                type="text"
-                placeholder="Search across all media..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onFocus={() => setIsSearchFocused(true)}
-                onBlur={() => setIsSearchFocused(false)}
-                className="w-full px-4 py-2 rounded-xl bg-gradient-to-r from-purple-900/50 to-pink-900/50 border border-indigo-500/30 text-white backdrop-blur-sm focus:outline-none focus:border-[#00E0FF] transition-colors"
-              />
-              <button
-                type="submit"
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-purple-400"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+            {/* Brand */}
+            <Link
+              to="/"
+              className="flex items-center gap-2 text-white font-semibold tracking-wide"
+              onClick={() => setOpen(false)}
+            >
+              <span>GameVerse</span>
+            </Link>
+
+            {/* Desktop nav */}
+            <nav className="hidden md:flex items-center gap-2">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+                    isActive(item.to)
+                      ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white"
+                      : "text-cyan-200 hover:bg-white/10 border border-transparent hover:border-white/10"
+                  }`}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+
+            {/* Actions */}
+            <div className="flex items-center gap-4">
+              {/* Expandable Search (desktop) */}
+              <form onSubmit={submitSearch} className="hidden sm:flex items-center">
+                <div className={`flex items-center border border-white/10 rounded-full overflow-hidden transition-all duration-200 ${searchOpen ? "bg-white/10 w-64" : "bg-white/5 w-10"}`}>
+                  <button
+                    type="button"
+                    onClick={() => setSearchOpen((v) => !v)}
+                    className="flex items-center justify-center w-10 h-10 text-cyan-200 hover:text-white"
+                    title="Search"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </button>
+                  {searchOpen && (
+                    <input
+                      type="text"
+                      value={q}
+                      onChange={(e) => setQ(e.target.value)}
+                      placeholder="Search..."
+                      className="bg-transparent placeholder:text-neutral-400 text-white px-2 py-2 w-full focus:outline-none"
+                    />
+                  )}
+                  {searchOpen && (
+                    <button type="submit" className="px-3 py-2 text-sm bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white">Go</button>
+                  )}
+                </div>
+              </form>
+
+              {/* Mobile menu toggle */}
+              <button
+                onClick={() => setOpen((o) => !o)}
+                className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-lg bg-white/5 border border-white/10 text-white hover:bg-white/10"
+                aria-label="Toggle menu"
+                aria-expanded={open}
+              >
+                {open ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                      d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
+                )}
               </button>
             </div>
-          </form>
-        </div>
-
-        {/* Desktop Nav Items */}
-        <div className="hidden lg:flex">
-          <ul className="menu menu-horizontal px-1 gap-6">{navItems}</ul>
-        </div>
-
-        {/* Mobile View */}
-        <div className="lg:hidden flex items-center gap-4">
-          {/* Mobile Search Icon */}
-          <button
-            onClick={() => navigate("/search")}
-            className="p-2 text-cyan-300"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
-
-          {/* Mobile Menu Button */}
-          <div className="dropdown dropdown-end">
-            <label tabIndex={0} className="btn btn-ghost">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-6 w-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                />
-              </svg>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-sm dropdown-content mt-3 z-[1] p-3 shadow-lg bg-[#121026] rounded-box w-52"
-            >
-              {navItems}
-            </ul>
           </div>
+
+          {/* Mobile nav */}
+          {open && (
+            <div className="md:hidden border-t border-white/10 px-3 py-2">
+              <nav className="flex flex-col gap-1 py-1">
+                {navItems.map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    onClick={() => setOpen(false)}
+                    className={`px-3 py-2 rounded-lg text-sm ${
+                      isActive(item.to)
+                        ? "bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white"
+                        : "text-cyan-200 hover:bg-white/10 border border-transparent hover:border-white/10"
+                    }`}
+                  >
+                    {item.label}
+                  </NavLink>
+                ))}
+                {/* Inline search for mobile */}
+                <form onSubmit={submitSearch} className="mt-2">
+                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-cyan-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    <input
+                      type="text"
+                      value={q}
+                      onChange={(e) => setQ(e.target.value)}
+                      placeholder="Search..."
+                      className="bg-transparent flex-1 text-white placeholder:text-neutral-400 focus:outline-none"
+                    />
+                    <button type="submit" className="px-3 py-1.5 text-sm rounded-md bg-gradient-to-r from-cyan-500 to-blue-600 text-white">Go</button>
+                  </div>
+                </form>
+              </nav>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </header>
   );
-};
+}
 
 export default Navbar;

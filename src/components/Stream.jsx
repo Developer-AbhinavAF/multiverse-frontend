@@ -46,10 +46,11 @@ const Stream = () => {
       const response = await axios.get(`${endpoint}/${slug}`);
       if (response.data) {
         setMedia({...response.data, collection, type: response.data.type || collection});
-        setLikeCount(response.data.likes || 0);
+        setLikeCount(response.data.likeCount || 0);
+        setEpisodePage(1);
         
         // Set first episode as default if series
-        if (['animeSeries', 'webSeries'].includes(response.data.type)) {
+        if (['animeSeries', 'webSeries'].includes(response.data.type || collection)) {
           const firstSeason = response.data.seasons?.[0];
           if (firstSeason && firstSeason.episodes?.[0]) {
             setSelectedEpisode({
@@ -89,12 +90,12 @@ const Stream = () => {
 
   useEffect(() => {
     fetchMedia();
-  }, [slug]);
+  }, [slug, collection]);
 
   const handleShare = () => {
     const shareData = {
-      title: media.title,
-      text: `Watch ${media.title} on SkyVeil`,
+      title: media?.title || 'SkyVeil',
+      text: media?.title ? `Watch ${media.title} on SkyVeil` : 'Watch on SkyVeil',
       url: window.location.href
     };
 
@@ -109,26 +110,22 @@ const Stream = () => {
     }
   };
 
-  const copyToClipboard = () => {
-    const tempInput = document.createElement('input');
-    tempInput.value = window.location.href;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    
+  const copyToClipboard = async () => {
     try {
-      const successful = document.execCommand('copy');
-      if (successful) {
-        alert('Link copied to clipboard!');
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(window.location.href);
       } else {
-        throw new Error('Clipboard copy failed');
+        const tempInput = document.createElement('input');
+        tempInput.value = window.location.href;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
       }
+      alert('Link copied to clipboard!');
     } catch (err) {
       console.error('Clipboard copy failed:', err);
-      tempInput.focus();
-      tempInput.setSelectionRange(0, tempInput.value.length);
-      alert('Select the link and copy manually: ' + window.location.href);
-    } finally {
-      document.body.removeChild(tempInput);
+      alert('Copy failed. Please copy this link manually: ' + window.location.href);
     }
   };
 
@@ -171,9 +168,9 @@ const Stream = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white flex items-center justify-center">
+      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 text-neutral-200 bg-transparent flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-400 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-cyan-400 mx-auto mb-4"></div>
           <p className="text-xl">Loading streaming details...</p>
         </div>
       </div>
@@ -182,14 +179,14 @@ const Stream = () => {
 
   if (error || !media) {
     return (
-      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 flex items-center justify-center">
-        <div className="text-center max-w-md p-8 bg-gradient-to-br from-gray-900/70 to-indigo-900/50 backdrop-blur-xl rounded-2xl border border-purple-500/30">
+      <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 flex items-center justify-center text-neutral-200">
+        <div className="text-center max-w-md p-8 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10">
           <div className="text-amber-400 text-5xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-white mb-4">Stream Unavailable</h2>
-          <p className="text-rose-200 mb-6">{error || "The media you are looking for does not exist."}</p>
+          <p className="text-cyan-200 mb-6">{error || "The media you are looking for does not exist."}</p>
           <button
             onClick={() => navigate(-1)}
-            className="bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg"
+            className="bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white px-6 py-3 rounded-xl font-medium shadow-lg"
           >
             Go Back
           </button>
@@ -199,19 +196,19 @@ const Stream = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-800 text-white">
+    <div className="min-h-screen pt-20 pb-12 px-4 sm:px-8 text-neutral-200">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <button 
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-teal-200 hover:text-white"
+            className="flex items-center gap-2 text-cyan-300 hover:text-white"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Back to Details
           </button>
-          <h1 className="text-2xl md:text-3xl font-bold text-center flex-1 px-4 truncate bg-gradient-to-r from-teal-400 to-cyan-300 bg-clip-text text-transparent">
+          <h1 className="text-2xl md:text-3xl font-bold text-center flex-1 px-4 truncate bg-gradient-to-r from-cyan-300 to-cyan-400 bg-clip-text text-transparent">
             {media.title}
           </h1>
           <div className="w-10"></div>
@@ -223,8 +220,8 @@ const Stream = () => {
               key={quality}
               className={`px-4 py-2 rounded-xl shadow-lg ${
                 selectedQuality === quality
-                  ? "bg-gradient-to-r from-teal-500 to-emerald-600 text-white"
-                  : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200 hover:from-purple-800/70 hover:to-pink-800/70"
+                  ? "bg-gradient-to-r from-teal-500 to-cyan-600 text-white"
+                  : "bg-white/10 text-cyan-200 hover:bg-white/15 border border-white/10"
               }`}
               onClick={() => setSelectedQuality(quality)}
             >
@@ -237,8 +234,8 @@ const Stream = () => {
               key={lang}
               className={`px-4 py-2 rounded-xl shadow-lg ${
                 selectedLanguage === lang
-                  ? "bg-gradient-to-r from-amber-500 to-orange-600 text-white"
-                  : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 text-cyan-200 hover:from-purple-800/70 hover:to-pink-800/70"
+                  ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white"
+                  : "bg-white/10 text-cyan-200 hover:bg-white/15 border border-white/10"
               }`}
               onClick={() => setSelectedLanguage(lang)}
             >
@@ -248,7 +245,7 @@ const Stream = () => {
         </div>
 
         <div 
-          className="mb-8 bg-black rounded-xl overflow-hidden relative border-2 border-purple-500/30"
+          className="mb-8 bg-black rounded-xl overflow-hidden relative border border-white/10"
         >
           <div className="relative aspect-video">
             {embedSource ? (
@@ -260,11 +257,11 @@ const Stream = () => {
                 allowFullScreen
               ></iframe>
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-900/30 to-purple-900/30">
+              <div className="w-full h-full flex items-center justify-center bg-white/5">
                 <div className="text-center p-8">
-                  <div className="text-5xl mb-4 text-amber-400">📺</div>
-                  <h2 className="text-2xl font-bold mb-4 text-teal-300">Stream Unavailable</h2>
-                  <p className="text-rose-200 mb-6">No embed URL configured for this media.</p>
+                  <div className="text-5xl mb-4 text-cyan-300">📺</div>
+                  <h2 className="text-2xl font-bold mb-4 text-cyan-300">Stream Unavailable</h2>
+                  <p className="text-cyan-200 mb-6">No embed URL configured for this media.</p>
                 </div>
               </div>
             )}
@@ -277,8 +274,8 @@ const Stream = () => {
               onClick={handleLike}
               className={`flex items-center gap-2 px-4 py-2 rounded-xl shadow-lg transition ${
                 isLiked 
-                  ? "bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700" 
-                  : "bg-gradient-to-r from-purple-900/50 to-pink-900/50 hover:from-purple-800/70 hover:to-pink-800/70"
+                  ? "bg-gradient-to-r from-rose-600 to-rose-700" 
+                  : "bg-white/10 hover:bg-white/15 border border-white/10"
               }`}
             >
               <svg 
@@ -295,7 +292,7 @@ const Stream = () => {
             
             <button 
               onClick={handleShare}
-              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-900/50 to-pink-900/50 hover:from-purple-800/70 hover:to-pink-800/70 rounded-xl shadow-lg transition text-cyan-200"
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/15 border border-white/10 rounded-xl shadow-lg transition text-cyan-200"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.8126 12.9126 9 12.482 9 12c0-.482-.114-.9126-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
@@ -307,7 +304,7 @@ const Stream = () => {
             {['animeSeries', 'webSeries'].includes(media.type) && media.downloadable && (
               <a
                 href="#"
-                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 rounded-xl shadow-lg transition text-white"
+                className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 rounded-xl shadow-lg transition text-white"
                 onClick={(e) => {
                   e.preventDefault();
                   navigate(`/media/${media.slug}?collection=${collection}`, {
@@ -328,7 +325,7 @@ const Stream = () => {
               {media.tags?.map((tag, index) => (
                 <span 
                   key={index} 
-                  className="px-3 py-1 bg-gradient-to-r from-indigo-700/50 to-purple-700/50 text-teal-200 rounded-full text-sm"
+                  className="px-3 py-1 bg-white/10 border border-white/10 text-cyan-200 rounded-full text-sm"
                 >
                   {tag}
                 </span>
@@ -341,16 +338,16 @@ const Stream = () => {
           className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"
         >
           <div className="md:col-span-2">
-            <div className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-              <h2 className="text-xl font-bold mb-4 text-teal-300">About</h2>
-              <p className="text-cyan-100">{media.description || 'No description available.'}</p>
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+              <h2 className="text-xl font-bold mb-4 text-cyan-300">About</h2>
+              <p className="text-cyan-200">{media.description || 'No description available.'}</p>
             </div>
           </div>
           
           <div>
-            <div className="bg-gradient-to-br from-purple-900/50 to-pink-900/50 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-              <h2 className="text-xl font-bold mb-4 text-teal-300">Details</h2>
-              <div className="space-y-3 text-cyan-100">
+            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
+              <h2 className="text-xl font-bold mb-4 text-cyan-300">Details</h2>
+              <div className="space-y-3 text-cyan-200">
                 <div className="flex justify-between">
                   <span>Type:</span>
                   <span className="text-white">{media.type}</span>
@@ -389,14 +386,14 @@ const Stream = () => {
             className="mt-8"
           >
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold text-teal-300">Episodes</h2>
+              <h2 className="text-2xl font-bold text-cyan-300">Episodes</h2>
               
               {totalPages > 1 && (
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => setEpisodePage(prev => Math.max(prev - 1, 1))}
                     disabled={episodePage === 1}
-                    className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 hover:from-purple-800/70 hover:to-pink-800/70 p-2 rounded-full shadow-lg disabled:opacity-50"
+                    className="bg-white/10 hover:bg-white/15 border border-white/10 p-2 rounded-full shadow-lg disabled:opacity-50"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7m0 0l7-7m-7 7h18" />
@@ -408,7 +405,7 @@ const Stream = () => {
                   <button 
                     onClick={() => setEpisodePage(prev => Math.min(prev + 1, totalPages))}
                     disabled={episodePage === totalPages}
-                    className="bg-gradient-to-r from-purple-900/50 to-pink-900/50 hover:from-purple-800/70 hover:to-pink-800/70 p-2 rounded-full shadow-lg disabled:opacity-50"
+                    className="bg-white/10 hover:bg-white/15 border border-white/10 p-2 rounded-full shadow-lg disabled:opacity-50"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -422,9 +419,9 @@ const Stream = () => {
               {currentEpisodes.map((episode, index) => (
                 <div 
                   key={index}
-                  className={`bg-gradient-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-sm rounded-xl p-3 hover:from-indigo-800/60 hover:to-purple-800/60 cursor-pointer transition group border border-purple-500/30 ${
+                  className={`bg-white/5 backdrop-blur-sm rounded-xl p-3 hover:bg-white/10 cursor-pointer transition group border border-white/10 ${
                     selectedEpisode?.episodeNumber === episode.episodeNumber && selectedEpisode?.seasonNumber === episode.seasonNumber
-                      ? "border-2 border-teal-500 shadow-lg"
+                      ? "border-2 border-cyan-500 shadow-lg"
                       : ""
                   }`}
                   onClick={() => {
@@ -432,7 +429,7 @@ const Stream = () => {
                     setSelectedLanguage("English");
                   }}
                 >
-                  <div className="aspect-video bg-gradient-to-br from-cyan-900/30 to-fuchsia-900/30 rounded-lg mb-2 flex items-center justify-center relative overflow-hidden border border-purple-500/30">
+                  <div className="aspect-video bg-white/10 rounded-lg mb-2 flex items-center justify-center relative overflow-hidden border border-white/10">
                     <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                       <div className="bg-black/50 rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -443,7 +440,7 @@ const Stream = () => {
                     <span className="text-xl font-bold text-cyan-200">S{episode.seasonNumber}E{episode.episodeNumber}</span>
                   </div>
                   <h3 className="font-medium text-cyan-200 truncate">{episode.title || `Episode ${episode.episodeNumber}`}</h3>
-                  <p className="text-rose-200 text-sm truncate">{episode.duration || '24 min'}</p>
+                  <p className="text-cyan-300 text-sm truncate">{episode.duration || '24 min'}</p>
                   
                   {/* Download buttons per quality */}
                   <div className="flex flex-wrap gap-1 mt-2">
@@ -452,7 +449,7 @@ const Stream = () => {
                         <a
                           key={quality}
                           href={details.downloadUrl}
-                          className="text-xs bg-gradient-to-r from-teal-700/70 to-emerald-800/70 hover:from-teal-600 hover:to-emerald-700 px-2 py-1 rounded text-cyan-100"
+                          className="text-xs bg-gradient-to-r from-teal-600/70 to-cyan-700/70 hover:from-teal-600 hover:to-cyan-700 px-2 py-1 rounded text-white"
                           onClick={(e) => e.stopPropagation()}
                         >
                           {quality}
