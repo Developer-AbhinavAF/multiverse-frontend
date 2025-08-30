@@ -3,8 +3,7 @@ import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <div className="mt-16">
-      <footer className="footer footer-center p-10 text-neutral-300 rounded bg-white/5 border-t border-white/10 backdrop-blur-md">
+    <footer className="footer footer-center p-10 text-neutral-300 rounded bg-white/5 border-t border-white/10 backdrop-blur-md">
         <nav className="grid grid-flow-col gap-4">
           <Link className="hover:text-white" to="/">Home</Link>
           <Link className="hover:text-white" to="/search">Search</Link>
@@ -53,7 +52,6 @@ function Footer() {
           <p className="text-neutral-400"> 2024 SkyVeil — All rights reserved.</p>
         </aside>
       </footer>
-    </div>
   );
 }
 
