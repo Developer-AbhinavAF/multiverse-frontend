@@ -29,7 +29,7 @@ const Stream = () => {
     cDramas: "https://backend-0nxk.onrender.com/api/cDramas",
     thaiDramas: "https://backend-0nxk.onrender.com/api/thaiDramas",
     japaneseDramas: "https://backend-0nxk.onrender.com/api/japaneseDramas",
-    pakistaniDramas: "https://backend-0nxk.onrender.com/api/pakistaniDramas",
+
   };
 
   const fetchMedia = async () => {

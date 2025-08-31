@@ -33,7 +33,7 @@ const Courses = () => {
     "https://backend-0nxk.onrender.com/api/cDramas",
     "https://backend-0nxk.onrender.com/api/thaiDramas",
     "https://backend-0nxk.onrender.com/api/japaneseDramas",
-    "https://backend-0nxk.onrender.com/api/pakistaniDramas",
+
   ];
 
   // Map each endpoint to its collection type (same order as endpoints)
@@ -46,7 +46,7 @@ const Courses = () => {
     "cDramas",
     "thaiDramas",
     "japaneseDramas",
-    "pakistaniDramas",
+
   ];
 
   const fetchAllMedia = useCallback(async () => {
@@ -122,7 +122,7 @@ const Courses = () => {
           "cDramas",
           "thaiDramas",
           "japaneseDramas",
-          "pakistaniDramas",
+
         ];
         return movieLike.includes(item.type);
       }

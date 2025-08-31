@@ -46,7 +46,7 @@ const Mediator = () => {
     cDramas: "https://backend-0nxk.onrender.com/api/cDramas",
     thaiDramas: "https://backend-0nxk.onrender.com/api/thaiDramas",
     japaneseDramas: "https://backend-0nxk.onrender.com/api/japaneseDramas",
-    pakistaniDramas: "https://backend-0nxk.onrender.com/api/pakistaniDramas",
+
   };
 
   const fetchMedia = useCallback(async () => {
@@ -78,7 +78,7 @@ const Mediator = () => {
             }
           } 
           // Movie download options
-          else if (['movies', 'animeMovie', 'kDramas', 'cDramas', 'thaiDramas', 'japaneseDramas', 'pakistaniDramas'].includes(collection)) {
+          else if (['movies', 'animeMovie', 'kDramas', 'cDramas', 'thaiDramas', 'japaneseDramas'].includes(collection)) {
             if (response.data.qualities) {
               Object.entries(response.data.qualities).forEach(([quality, details]) => {
                 if (details && details.downloadUrl) {

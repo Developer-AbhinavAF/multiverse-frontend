@@ -25,7 +25,7 @@ const Hero = () => {
     "cDramas",
     "thaiDramas",
     "japaneseDramas",
-    "pakistaniDramas",
+
   ];
 
   // Sync with /search route and ?q= param

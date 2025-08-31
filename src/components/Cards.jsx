@@ -8,7 +8,7 @@ function Cards({ item, collection }) {
   // Map collections to display types
   const collectionTypeMap = {
     movies: "Movie",
-    pakistaniDramas: "Pakistani Drama",
+
     japaneseDramas: "Japanese Drama",
     kDramas: "K-Drama",
     animeMovie: "Anime Movie",
@@ -28,7 +28,7 @@ function Cards({ item, collection }) {
     cDramas: "bg-emerald-500 text-white",
     thaiDramas: "bg-orange-500 text-white",
     japaneseDramas: "bg-yellow-400 text-black",
-    pakistaniDramas: "bg-teal-500 text-white",
+
   };
 
   const getQualities = () => {
