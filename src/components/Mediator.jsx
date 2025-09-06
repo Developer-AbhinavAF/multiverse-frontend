@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { MediatorSkeleton } from "./Skeletons";
 
 const Mediator = () => {
   const { slug } = useParams();
@@ -46,7 +47,7 @@ const Mediator = () => {
     cDramas: "https://backend-0nxk.onrender.com/api/cDramas",
     thaiDramas: "https://backend-0nxk.onrender.com/api/thaiDramas",
     japaneseDramas: "https://backend-0nxk.onrender.com/api/japaneseDramas",
-
+    games: "https://backend-0nxk.onrender.com/api/games",
   };
 
   const fetchMedia = useCallback(async () => {
@@ -61,13 +62,25 @@ const Mediator = () => {
       }
       
       try {
+        // sessionStorage cache
+        const cacheKey = `media:${collection}:${slug}`;
+        const cached = sessionStorage.getItem(cacheKey);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed?.expiry && parsed.expiry > Date.now()) {
+            setMedia({ ...parsed.data, collection });
+          }
+        }
+
         const response = await axios.get(`${endpoint}/${slug}`);
         if (response.data) {
           setMedia({...response.data, collection});
+          // set cache with 10 min TTL
+          sessionStorage.setItem(cacheKey, JSON.stringify({ data: response.data, expiry: Date.now() + 10 * 60 * 1000 }));
           
           let options = [];
           // Game download options
-          if (['pcGames', 'androidGames', 'iosGames', 'pcApps', 'androidApps', 'modApks'].includes(collection)) {
+          if (['games', 'pcGames', 'androidGames', 'iosGames', 'pcApps', 'androidApps', 'modApks'].includes(collection)) {
             if (response.data.downloadLinks) {
               Object.entries(response.data.downloadLinks).forEach(([provider, link]) => {
                 options.push({ quality: provider, link });
@@ -112,6 +125,10 @@ const Mediator = () => {
           
           setDownloadOptions(options);
           if (options.length > 0) setSelectedQuality(options[0].quality);
+          // If no download links available, redirect to 404 page
+          if (options.length === 0) {
+            navigate('/404', { replace: true, state: { reason: 'No download links available for this media.' } });
+          }
           
           // Set initial like count
           setLikeCount(response.data.likeCount || 0);
@@ -119,11 +136,13 @@ const Mediator = () => {
       } catch (err) {
         console.error("Fetch error:", err);
         setError("Media not found in the specified collection.");
+        navigate('/broken', { replace: true, state: { reason: 'Failed to load media details.' } });
       }
       
     } catch (err) {
       console.error("Fetch Error:", err);
       setError("Failed to load media. Please try again later.");
+      navigate('/broken', { replace: true, state: { reason: 'Network or server error while loading media.' } });
     } finally {
       setLoading(false);
     }
@@ -276,18 +295,15 @@ const Mediator = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-teal-400 mx-auto mb-4"></div>
-          <p className="text-xl">Loading media details...</p>
-        </div>
+      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 bg-gradient-to-br from-black via-zinc-950 to-black text-white">
+        <MediatorSkeleton />
       </div>
     );
   }
 
   if (error || !media) {
     return (
-      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 bg-gradient-to-br from-stone-700 via-gray-900 to-black flex items-center justify-center">
+      <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 bg-gradient-to-br from-black via-zinc-950 to-black flex items-center justify-center">
         <div className="text-center max-w-md p-8 bg-white/5 border border-white/10 backdrop-blur-md rounded-2xl">
           <div className="text-red-400 text-5xl mb-4">⚠️</div>
           <h2 className="text-2xl font-bold text-neutral-100 mb-4">Media Unavailable</h2>
@@ -309,7 +325,7 @@ const Mediator = () => {
   const selectedDownload = downloadOptions.find(opt => opt.quality === selectedQuality);
 
   return (
-    <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 bg-gradient-to-br from-stone-600 via-gray-900 to-black text-white">
+    <div className="min-h-screen pt-24 pb-8 px-4 sm:px-8 bg-gradient-to-br from-black via-zinc-950 to-black text-white">
       <div className="max-w-5xl mx-auto">
         <button 
           onClick={() => navigate(-1)}
@@ -826,6 +842,51 @@ const Mediator = () => {
           )}
         </div>
       </div>
+      {collection === 'games' && media?.minimumRequirements && (
+        <div className="max-w-5xl mx-auto mt-8">
+          <div className="bg-white/5 border border-white/10 backdrop-blur-sm p-5 rounded-2xl">
+            <h2 className="text-xl font-bold mb-4 text-cyan-300">Minimum Requirements</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {media.minimumRequirements.os && (
+                <div>
+                  <h3 className="text-neutral-400 text-sm uppercase mb-1">OS</h3>
+                  <p className="text-neutral-300">{media.minimumRequirements.os}</p>
+                </div>
+              )}
+              {media.minimumRequirements.processor && (
+                <div>
+                  <h3 className="text-neutral-400 text-sm uppercase mb-1">Processor</h3>
+                  <p className="text-neutral-300">{media.minimumRequirements.processor}</p>
+                </div>
+              )}
+              {media.minimumRequirements.memory && (
+                <div>
+                  <h3 className="text-neutral-400 text-sm uppercase mb-1">Memory</h3>
+                  <p className="text-neutral-300">{media.minimumRequirements.memory}</p>
+                </div>
+              )}
+              {media.minimumRequirements.graphics && (
+                <div>
+                  <h3 className="text-neutral-400 text-sm uppercase mb-1">Graphics</h3>
+                  <p className="text-neutral-300">{media.minimumRequirements.graphics}</p>
+                </div>
+              )}
+              {media.minimumRequirements.storage && (
+                <div>
+                  <h3 className="text-neutral-400 text-sm uppercase mb-1">Storage</h3>
+                  <p className="text-neutral-300">{media.minimumRequirements.storage}</p>
+                </div>
+              )}
+              {media.minimumRequirements.additionalNotes && (
+                <div className="md:col-span-2">
+                  <h3 className="text-neutral-400 text-sm uppercase mb-1">Additional Notes</h3>
+                  <p className="text-neutral-300">{media.minimumRequirements.additionalNotes}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

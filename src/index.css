@@ -119,3 +119,18 @@ a:hover { color: #a5f3fc; /* cyan-200 */ }
 b {
   background-color: #cf0da5d5;
 }
+
+/* Shimmer animation for skeletons */
+.shimmer-container { position: relative; overflow: hidden; }
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0) 100%);
+  transform: translateX(-100%);
+  animation: shimmer-move 1.6s infinite;
+}
+@keyframes shimmer-move {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}

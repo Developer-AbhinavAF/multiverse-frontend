@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import Cards from "./Cards";
+import { SkeletonCard } from "./Skeletons";
 
 const Hero = () => {
   const [search, setSearch] = useState("");
@@ -159,13 +160,18 @@ const Hero = () => {
                 desc: "Stream & Download Latest Drama's in HD quality.",
               },
             ].map((item, index) => (
-              <div key={index} className="p-6 rounded-xl bg-white/5 border border-white/10">
+              <button
+                key={index}
+                onClick={() => navigate('/search')}
+                className="p-6 rounded-xl bg-white/5 border border-white/10 text-left cursor-pointer hover:bg-white/10 transition focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                aria-label={`Go to search: ${item.title}`}
+              >
                 <div className="text-4xl mb-2">{item.icon}</div>
                 <h2 className={`text-xl font-semibold mb-1 ${item.color}`}>
                   {item.title}
                 </h2>
                 <p className="text-[#A0A0B2] text-sm">{item.desc}</p>
-              </div>
+              </button>
             ))}
           </div>
         </div>
@@ -322,9 +328,10 @@ const Hero = () => {
           )}
 
           {loading ? (
-            <div className="text-center py-20">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#00E0FF] mb-4"></div>
-              <p className="text-xl">Searching database...</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

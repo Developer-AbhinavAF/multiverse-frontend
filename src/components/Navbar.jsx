@@ -34,7 +34,7 @@ function Navbar() {
               className="flex items-center gap-2 text-white font-semibold tracking-wide"
               onClick={() => setOpen(false)}
             >
-              <span>GameVerse</span>
+              <span>SkyVeil</span>
             </Link>
 
             {/* Desktop nav */}

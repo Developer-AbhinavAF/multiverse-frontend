@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 
 function Cards({ item, collection }) {
-  const [showTooltip, setShowTooltip] = useState(false);
   
   // Map collections to display types
   const collectionTypeMap = {
@@ -39,21 +38,19 @@ function Cards({ item, collection }) {
   return (
     <Link to={`/media/${item.slug}?collection=${collection}`} className="h-full block">
       <motion.div
-        className="relative group flex h-full flex-col rounded-xl overflow-hidden border border-white/10 bg-gray-900/50"
-        onMouseEnter={() => setShowTooltip(true)}
-        onMouseLeave={() => setShowTooltip(false)}
-        style={{ height: '420px' }}
+        className="relative group flex h-full flex-col rounded-xl overflow-hidden border border-white/10 bg-gray-900/50 hover:border-white/20"
+        style={{ height: '460px' }}
         initial={{ y: 0, boxShadow: '0 0 #0000' }}
         whileHover={{ y: -4, boxShadow: '0 12px 24px rgba(0,0,0,0.35)' }}
         transition={{ type: 'spring', stiffness: 360, damping: 26 }}
       >
-        {/* Image section (90%) */}
-        <div className="relative flex-[9] min-h-0 w-full overflow-hidden">
+        {/* Image section (reduced height) */}
+        <div className="relative flex-[8] min-h-0 w-full overflow-hidden">
           {item.thumbnail ? (
             <img
               src={item.thumbnail}
               alt={item.title}
-              className="absolute inset-0 w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover transform transition-transform duration-300 ease-out group-hover:scale-[1.05]"
             />
           ) : (
             <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-white/5 to-black/20 flex items-center justify-center">
@@ -71,23 +68,13 @@ function Cards({ item, collection }) {
             {collectionTypeMap[collection] || collection}
           </motion.div>
 
-          {/* Title tooltip on hover */}
-          {showTooltip && (
-            <motion.div
-              className="absolute left-2 right-2 bottom-14 z-10 px-3 py-2 rounded-lg bg-black/80 text-gray-100 text-xs border border-white/10 backdrop-blur-sm shadow-lg"
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 6 }}
-            >
-              {item.title}
-            </motion.div>
-          )}
+          
         </div>
 
-        {/* Footer (10%) */}
-        <div className="flex-[1] min-h-0 w-full bg-black/30 px-3 py-6 flex flex-col justify-center gap-2">
+        {/* Footer (slightly increased to preserve details) */}
+        <div className="flex-[2] min-h-0 w-full bg-black/30 px-3 py-5 flex flex-col justify-start gap-2">
           <div className="flex-1 min-w-0 flex items-center">
-            <h2 className="text-sm sm:text-base font-semibold truncate text-gray-100">
+            <h2 className="text-sm sm:text-base font-semibold text-gray-100 leading-snug">
               {item.title}
             </h2>
           </div>

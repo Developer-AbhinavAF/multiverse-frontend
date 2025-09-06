@@ -49,10 +49,62 @@ const Courses = () => {
 
   ];
 
+  // Helpers for cache keys
+  const getEndpointKey = (type, query) => `courses:${type}:${query || 'all'}`;
+  const getCombinedKey = (query) => `courses:all:${query || 'all'}`;
+
+  const clearCoursesCache = () => {
+    try {
+      const toRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('courses:')) toRemove.push(k);
+      }
+      toRemove.forEach(k => localStorage.removeItem(k));
+    } catch (_) {}
+  };
+
   const fetchAllMedia = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
+
+      // localStorage cache with TTL
+      const ttlMinutes = 10; // adjust as needed
+      const combinedKey = getCombinedKey(submittedSearch);
+      const cachedRawCombined = localStorage.getItem(combinedKey);
+      let usedAnyCache = false;
+      // Try fast path via combined key first
+      if (cachedRawCombined) {
+        try {
+          const cached = JSON.parse(cachedRawCombined);
+          if (cached?.expiry && cached.expiry > Date.now() && Array.isArray(cached.data)) {
+            setMedia(cached.data);
+            setLoading(false);
+            usedAnyCache = true;
+          }
+        } catch (_) {}
+      }
+      // If combined cache not present/valid, try per-endpoint caches and combine
+      if (!usedAnyCache) {
+        const perCache = [];
+        endpointTypes.forEach((type) => {
+          const key = getEndpointKey(type, submittedSearch);
+          const raw = localStorage.getItem(key);
+          if (!raw) return;
+          try {
+            const parsed = JSON.parse(raw);
+            if (parsed?.expiry && parsed.expiry > Date.now() && Array.isArray(parsed.data)) {
+              perCache.push(...parsed.data.map(it => ({ ...it, type: it.type || type })));
+            }
+          } catch (_) {}
+        });
+        if (perCache.length > 0) {
+          setMedia(perCache);
+          setLoading(false);
+          usedAnyCache = true;
+        }
+      }
 
       // Fetch from all endpoints, tolerate partial failures
       const responses = await Promise.allSettled(
@@ -79,6 +131,20 @@ const Courses = () => {
       });
       
       setMedia(allResults);
+      // Write combined cache and per-endpoint caches with TTL
+      const expiry = Date.now() + ttlMinutes * 60 * 1000;
+      try {
+        localStorage.setItem(combinedKey, JSON.stringify({ data: allResults, expiry }));
+      } catch (_) {}
+      // Group by type
+      const grouped = endpointTypes.reduce((acc, t) => { acc[t] = []; return acc; }, {});
+      allResults.forEach(it => { grouped[it.type]?.push(it); });
+      try {
+        Object.entries(grouped).forEach(([type, items]) => {
+          const key = getEndpointKey(type, submittedSearch);
+          localStorage.setItem(key, JSON.stringify({ data: items, expiry }));
+        });
+      } catch (_) {}
     } catch (err) {
       console.error("Fetch error:", err);
       setError("Failed to fetch media. Please try again later.");
@@ -90,6 +156,31 @@ const Courses = () => {
   useEffect(() => {
     fetchAllMedia();
   }, [fetchAllMedia]);
+
+  // Restore filters/sort from localStorage on first mount
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('courses:filters'));
+      if (saved && typeof saved === 'object') {
+        if (saved.activeFilter) setActiveFilter(saved.activeFilter);
+        if (saved.qualityFilter) setQualityFilter(saved.qualityFilter);
+        if (typeof saved.ratingFilter === 'number') setRatingFilter(saved.ratingFilter);
+        if (saved.yearFilter !== undefined) setYearFilter(saved.yearFilter);
+        if (saved.sortOption) setSortOption(saved.sortOption);
+      }
+    } catch (_) {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist filters/sort whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        'courses:filters',
+        JSON.stringify({ activeFilter, qualityFilter, ratingFilter: Number(ratingFilter), yearFilter, sortOption })
+      );
+    } catch (_) {}
+  }, [activeFilter, qualityFilter, ratingFilter, yearFilter, sortOption]);
 
   // Reset page to 1 when filters change
   useEffect(() => {
@@ -118,19 +209,18 @@ const Courses = () => {
         const movieLike = [
           "movie",
           "animeMovie",
-          "kDramas",
-          "cDramas",
-          "thaiDramas",
-          "japaneseDramas",
-
+          // "kDramas",
+          // "cDramas",
+          // "thaiDramas",
+          // "japaneseDramas",
         ];
         return movieLike.includes(item.type);
       }
 
-      if (activeFilter === "game") return item.type.includes("Game");
       if (activeFilter === "anime") return item.type.includes("anime");
+      if (activeFilter === "movie") return item.type.includes("movie");
+      if (activeFilter === "drama") return item.type === "cDrama" || item.type === "kDrama" || item.type === "thaiDrama" || item.type === "japaneseDrama";
       if (activeFilter === "series") return item.type === "webSeries" || item.type === "animeSeries";
-      if (activeFilter === "app") return item.type.includes("App") || item.type === "modApk";
       return true;
     })
     // Filter by quality
@@ -189,10 +279,9 @@ const Courses = () => {
   const filters = [
     { id: "all", label: "All Media" },
     { id: "movie", label: "Movies" },
-    { id: "game", label: "Games" },
+    { id: "drama", label: "Drama" },
     { id: "anime", label: "Anime" },
     { id: "series", label: "Series" },
-    { id: "app", label: "Apps" },
   ];
 
   const qualityOptions = [
