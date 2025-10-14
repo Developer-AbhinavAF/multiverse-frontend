@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense, lazy } from "react";
+import React, { useEffect, Suspense, lazy, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import Navbar from "./components/Navbar";
@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import Loader from "./components/Loader";
 import MouseGlow from "./components/MouseGlow";
 import ScrollControls from "./components/ScrollControls";
+import PerplexityPromoModal from "./components/PerplexityPromoModal";
 
 const Home = lazy(() => import("./home/Home"));
 const About = lazy(() => import("./components/About"));
@@ -18,6 +19,7 @@ const NotFound = lazy(() => import("./components/NotFound"));
 const Broken = lazy(() => import("./components/PageBroken"));
 
 function App() {
+  const [showPromo, setShowPromo] = useState(false);
   // Temporary: Global hotkey Ctrl+Shift+F to trigger a toast
   useEffect(() => {
     const onKeyDown = (e) => {
@@ -38,6 +40,18 @@ function App() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
+  useEffect(() => {
+    try {
+      const dismissed = localStorage.getItem("pplxPromoDismissed");
+      if (!dismissed) setShowPromo(true);
+    } catch (e) {}
+  }, []);
+  const handleClosePromo = () => {
+    try {
+      localStorage.setItem("pplxPromoDismissed", "1");
+    } catch (e) {}
+    setShowPromo(false);
+  };
   return (
     <div className="min-h-screen text-neutral-200 relative bg-black">
       {/* Global mouse-follow shine background */}
@@ -60,6 +74,7 @@ function App() {
           </Routes>
         </Suspense>
       </main>
+      <PerplexityPromoModal open={showPromo} onClose={handleClosePromo} />
       <Footer />
       <Toaster 
         position="bottom-center"
