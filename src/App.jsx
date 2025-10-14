@@ -41,15 +41,9 @@ function App() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
   useEffect(() => {
-    try {
-      const dismissed = localStorage.getItem("pplxPromoDismissed");
-      if (!dismissed) setShowPromo(true);
-    } catch (e) {}
+    setShowPromo(true);
   }, []);
   const handleClosePromo = () => {
-    try {
-      localStorage.setItem("pplxPromoDismissed", "1");
-    } catch (e) {}
     setShowPromo(false);
   };
   return (
