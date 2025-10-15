@@ -1,6 +1,6 @@
 import React from "react";
 
-const LOGO_URL = "https://www.hindustantimes.com/ht-img/img/2025/07/21/1600x900/Perplexity-Comet_1745566557673_1753081300467.png";
+const LOGO_URL = "../assets/Perplexity-Comet_1745566557673_1753081300467.webp";
 const REFERRAL_URL = "https://pplx.ai/abhinavdev40518";
 
 export default function PerplexityPromoModal({ open, onClose }) {
